@@ -198,6 +198,31 @@
 
     ::-webkit-scrollbar { width: 6px; height: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
     @media(max-width:900px){#tab-settings>div{grid-template-columns:1fr!important;}}
+
+    /* Multi-select dropdown */
+    .ms-wrap { position: relative; }
+    .ms-box { min-height: 38px; padding: 4px 8px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; transition: border-color 0.15s; }
+    .ms-box:focus-within, .ms-box.open { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .ms-box.disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+    .ms-chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: var(--accent-soft); color: var(--accent); border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+    .ms-chip .ms-rm { cursor: pointer; font-size: 12px; line-height: 1; opacity: 0.7; }
+    .ms-chip .ms-rm:hover { opacity: 1; }
+    .ms-placeholder { font-size: 13px; color: var(--text-dim); user-select: none; flex: 1; }
+    .ms-arrow { margin-left: auto; font-size: 10px; color: var(--text-dim); flex-shrink: 0; transition: transform 0.15s; }
+    .ms-box.open .ms-arrow { transform: rotate(180deg); }
+    .ms-dropdown { display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow-lg); z-index: 1000; overflow: hidden; }
+    .ms-dropdown.open { display: block; }
+    .ms-search { padding: 8px 10px; border-bottom: 1px solid var(--border-light); }
+    .ms-search input { width: 100%; padding: 5px 8px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; font-size: 12px; font-family: var(--font); color: var(--text); }
+    .ms-search input:focus { outline: none; border-color: var(--accent); }
+    .ms-list { max-height: 200px; overflow-y: auto; }
+    .ms-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; font-size: 12px; cursor: pointer; transition: background 0.1s; }
+    .ms-item:hover { background: var(--surface-2); }
+    .ms-item.selected { background: var(--accent-soft); }
+    .ms-item input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--accent); flex-shrink: 0; cursor: pointer; }
+    .ms-item label { cursor: pointer; flex: 1; user-select: none; color: var(--text); }
+    .ms-empty { padding: 12px 10px; font-size: 12px; color: var(--text-dim); text-align: center; }
+    .ms-count { font-size: 10px; color: var(--text-dim); margin-left: auto; font-family: var(--mono); }
   </style>
 </head>
 <body>
@@ -242,12 +267,48 @@
           <div class="q-num">2</div>
           <div class="q-label">Which countries, states, cities, or hotel names?</div>
           <div style="display:grid;grid-template-columns:repeat(2,minmax(140px,1fr));gap:8px;">
-            <input type="text" id="qCountry" placeholder="Country" />
-            <input type="text" id="qState" placeholder="State" />
-            <input type="text" id="qCity" placeholder="City" />
-            <input type="text" id="qHotelName" placeholder="Hotel name / ID" />
+            <div class="ms-wrap" id="msWrap-country">
+              <div class="ms-box disabled" id="msBox-country" onclick="msToggle('country')">
+                <span class="ms-placeholder" id="msPlaceholder-country">Country</span>
+                <span class="ms-arrow">&#9660;</span>
+              </div>
+              <div class="ms-dropdown" id="msDrop-country">
+                <div class="ms-search"><input type="text" placeholder="Search..." id="msSearch-country" oninput="msFilter('country')" onclick="event.stopPropagation()" /></div>
+                <div class="ms-list" id="msList-country"></div>
+              </div>
+            </div>
+            <div class="ms-wrap" id="msWrap-state">
+              <div class="ms-box disabled" id="msBox-state" onclick="msToggle('state')">
+                <span class="ms-placeholder" id="msPlaceholder-state">State</span>
+                <span class="ms-arrow">&#9660;</span>
+              </div>
+              <div class="ms-dropdown" id="msDrop-state">
+                <div class="ms-search"><input type="text" placeholder="Search..." id="msSearch-state" oninput="msFilter('state')" onclick="event.stopPropagation()" /></div>
+                <div class="ms-list" id="msList-state"></div>
+              </div>
+            </div>
+            <div class="ms-wrap" id="msWrap-city">
+              <div class="ms-box disabled" id="msBox-city" onclick="msToggle('city')">
+                <span class="ms-placeholder" id="msPlaceholder-city">City</span>
+                <span class="ms-arrow">&#9660;</span>
+              </div>
+              <div class="ms-dropdown" id="msDrop-city">
+                <div class="ms-search"><input type="text" placeholder="Search..." id="msSearch-city" oninput="msFilter('city')" onclick="event.stopPropagation()" /></div>
+                <div class="ms-list" id="msList-city"></div>
+              </div>
+            </div>
+            <div class="ms-wrap" id="msWrap-hotel">
+              <div class="ms-box disabled" id="msBox-hotel" onclick="msToggle('hotel')">
+                <span class="ms-placeholder" id="msPlaceholder-hotel">Hotel name / ID</span>
+                <span class="ms-arrow">&#9660;</span>
+              </div>
+              <div class="ms-dropdown" id="msDrop-hotel">
+                <div class="ms-search"><input type="text" placeholder="Search..." id="msSearch-hotel" oninput="msFilter('hotel')" onclick="event.stopPropagation()" /></div>
+                <div class="ms-list" id="msList-hotel"></div>
+              </div>
+            </div>
           </div>
-          <div class="q-help">Optional. These pre-fill the same country/state/city/search filters you already had.</div>
+          <div class="q-help">Optional. Select multiple. Picking a country filters states, cities, and hotels below it.</div>
         </div>
         <div class="q-item">
           <div class="q-num">3</div>
@@ -626,8 +687,27 @@ function run(){
   const minSc=toN($('minScore').value),maxSc=toN($('maxScore').value)||100;
   const maxTS=(toN($('maxTopShare').value)||100)/100;
   const mrV=$('maxRecency').value.trim(),maxR=mrV?toN(mrV):Infinity;
+  const msC=[...MS.country],msSt=[...MS.state],msCi=[...MS.city],msH=[...MS.hotel];
 
-  let f=S.hotels.filter(h=>!co||h.country===co).filter(h=>!st||h.state===st).filter(h=>!ci||h.city===ci).filter(h=>!ra||String(h.rating)===String(ra)).filter(h=>h.totalBookings>=minB).filter(h=>h.meaningfulSupplierCount>=minS).filter(h=>!search||h.hotelName.toLowerCase().includes(search)||h.hotelId.toLowerCase().includes(search)).filter(h=>!ve||h.verdict===ve).filter(h=>h.hotelScore>=minSc&&h.hotelScore<=maxSc).filter(h=>h.topSupplierShare<=maxTS).filter(h=>h.hotelRecencyDays<=maxR).sort((a,b)=>b.hotelScore-a.hotelScore||b.totalBookings-a.totalBookings).slice(0,topN).map((h,i)=>({...h,rank:i+1}));
+  let f=S.hotels
+    .filter(h=>!co||h.country===co)
+    .filter(h=>!st||h.state===st)
+    .filter(h=>!ci||h.city===ci)
+    .filter(h=>!msC.length||msC.includes(h.country))
+    .filter(h=>!msSt.length||msSt.includes(h.state))
+    .filter(h=>!msCi.length||msCi.includes(h.city))
+    .filter(h=>!msH.length||msH.includes(h.hotelId)||msH.some(n=>h.hotelName&&h.hotelName.toLowerCase()===n.toLowerCase()))
+    .filter(h=>!ra||String(h.rating)===String(ra))
+    .filter(h=>h.totalBookings>=minB)
+    .filter(h=>h.meaningfulSupplierCount>=minS)
+    .filter(h=>!search||h.hotelName.toLowerCase().includes(search)||h.hotelId.toLowerCase().includes(search))
+    .filter(h=>!ve||h.verdict===ve)
+    .filter(h=>h.hotelScore>=minSc&&h.hotelScore<=maxSc)
+    .filter(h=>h.topSupplierShare<=maxTS)
+    .filter(h=>h.hotelRecencyDays<=maxR)
+    .sort((a,b)=>b.hotelScore-a.hotelScore||b.totalBookings-a.totalBookings)
+    .slice(0,topN)
+    .map((h,i)=>({...h,rank:i+1}));
 
   S.filtered=f;S.supplierLB=computeLB(f);S.supIdx=buildSupplierIndex(f);S.plan=[];
   renderHotelTable(f);renderLB(S.supplierLB);renderPicker();renderPlan([]);updateCov();updateStats(f);if(f.length)renderRankProof(1);else $('rankProof').classList.add('hidden');
@@ -790,12 +870,13 @@ function setAdvancedVisible(show){
 }
 function fillQuestionSummary(){
   const pills=[];
+  const msCS=[...MS.country],msSS=[...MS.state],msCS2=[...MS.city],msHS=[...MS.hotel];
   const pairs=[
     ['Top N', $('topN').value && $('topN').value !== '100' ? $('topN').value : 'Default'],
-    ['Country', $('countryF').value || 'Any'],
-    ['State', $('stateF').value || 'Any'],
-    ['City', $('cityF').value || 'Any'],
-    ['Hotel', $('searchInput').value || 'Any'],
+    ['Country', msCS.length ? msCS.join(', ') : ($('countryF').value||'Any')],
+    ['State', msSS.length ? msSS.join(', ') : ($('stateF').value||'Any')],
+    ['City', msCS2.length ? msCS2.join(', ') : ($('cityF').value||'Any')],
+    ['Hotel', msHS.length ? msHS.join(', ') : ($('searchInput').value||'Any')],
     ['Exclude', $('excludeSup').value || 'None'],
     ['Force include', $('forceSup').value || 'None'],
   ];
@@ -803,31 +884,20 @@ function fillQuestionSummary(){
 }
 function applyQuestionInputs(){
   if($('qTopN').value.trim()) $('topN').value = $('qTopN').value.trim();
-  $('searchInput').value = $('qHotelName').value.trim();
   $('excludeSup').value = $('qExcludeSup').value.trim();
   $('forceSup').value = $('qForceSup').value.trim();
-
-  const countryQ = $('qCountry').value.trim();
-  const stateQ = $('qState').value.trim();
-  const cityQ = $('qCity').value.trim();
-
-  if(countryQ){
-    const match=[...$('countryF').options].find(o=>o.value.toLowerCase()===countryQ.toLowerCase());
-    if(match) $('countryF').value = match.value;
-  }
+  $('countryF').value = '';
+  $('stateF').value = '';
+  $('cityF').value = '';
+  $('searchInput').value = '';
   refreshFilters();
-  if(stateQ){
-    const match=[...$('stateF').options].find(o=>o.value.toLowerCase()===stateQ.toLowerCase());
-    if(match) $('stateF').value = match.value;
-  }
-  refreshFilters();
-  if(cityQ){
-    const match=[...$('cityF').options].find(o=>o.value.toLowerCase()===cityQ.toLowerCase());
-    if(match) $('cityF').value = match.value;
-  }
 }
 function resetQuestionsOnly(){
-  ['qTopN','qCountry','qState','qCity','qHotelName','qExcludeSup','qForceSup'].forEach(id=>$(id).value='');
+  $('qTopN').value='';
+  $('qExcludeSup').value='';
+  $('qForceSup').value='';
+  MS.country.clear(); MS.state.clear(); MS.city.clear(); MS.hotel.clear();
+  ['country','state','city','hotel'].forEach(k=>msRenderBox(k));
 }
 async function showCalculatingThen(fn){
   $('calcOverlay').classList.add('show');
@@ -892,7 +962,10 @@ async function loadCsvFile(file){
     S.hotels=computeHotels(rows);
     S.selectedSuppliers.clear();
     S.plan=[];
+    MS.country.clear(); MS.state.clear(); MS.city.clear(); MS.hotel.clear();
+    ['country','state','city','hotel'].forEach(k=>msRenderBox(k));
     refreshFilters();
+    populateQuestionDropdowns();
   }catch(err){ alert(err.message); throw err; }
 }
 async function analyzeFromQuestions(){
@@ -948,6 +1021,154 @@ $('selTop5').addEventListener('click',()=>{S.selectedSuppliers=new Set(S.supplie
 $('supSearch').addEventListener('input',renderPicker);
 [$('countryF'),$('stateF'),$('cityF'),$('ratingF'),$('verdictF')].forEach(el=>el.addEventListener('change',()=>{refreshFilters();if(S.hotels.length){run();fillQuestionSummary()}}));
 $('searchInput').addEventListener('input',()=>{if(S.hotels.length){run();fillQuestionSummary()}});
+
+
+// ─── MULTI-SELECT ENGINE ───
+const MS = { country: new Set(), state: new Set(), city: new Set(), hotel: new Set() };
+const MS_DATA = { country: [], state: [], city: [], hotel: [] };
+
+function msGetCascaded(field) {
+  const rows = S.rawRows;
+  if (!rows.length) return [];
+  const badVal = v => !v || v.startsWith('#') || ['n/a','na','null','undefined','none','-'].includes(v.toLowerCase().trim());
+  if (field === 'country') {
+    return [...new Set(rows.map(r => (r['Country']||r['CountryName']||'').trim()).filter(v => v && !badVal(v)))].sort();
+  }
+  if (field === 'state') {
+    const coSel = [...MS.country];
+    return [...new Set(rows
+      .filter(r => !coSel.length || coSel.includes((r['Country']||r['CountryName']||'').trim()))
+      .map(r => (r['State']||r['StateName']||'').trim()).filter(v => v && !badVal(v)))].sort();
+  }
+  if (field === 'city') {
+    const coSel = [...MS.country], stSel = [...MS.state];
+    return [...new Set(rows
+      .filter(r => !coSel.length || coSel.includes((r['Country']||r['CountryName']||'').trim()))
+      .filter(r => !stSel.length || stSel.includes((r['State']||r['StateName']||'').trim()))
+      .map(r => (r['City']||r['CityName']||'').trim()).filter(v => v && !badVal(v)))].sort();
+  }
+  if (field === 'hotel') {
+    const coSel = [...MS.country], stSel = [...MS.state], ciSel = [...MS.city];
+    const seen = new Set();
+    return rows
+      .filter(r => !coSel.length || coSel.includes((r['Country']||r['CountryName']||'').trim()))
+      .filter(r => !stSel.length || stSel.includes((r['State']||r['StateName']||'').trim()))
+      .filter(r => !ciSel.length || ciSel.includes((r['City']||r['CityName']||'').trim()))
+      .reduce((acc, r) => {
+        const id = String(r['Hotel ID']||'').trim();
+        const name = (r['Hotel Name']||r['HotelName']||'').trim();
+        const key = id || name;
+        if (key && !badVal(key) && !seen.has(key)) { seen.add(key); acc.push({ id, name, label: name || id }); }
+        return acc;
+      }, [])
+      .sort((a,b)=>a.label.localeCompare(b.label));
+  }
+  return [];
+}
+
+function msRenderList(field) {
+  const query = ($('msSearch-'+field).value||'').toLowerCase().trim();
+  const items = msGetCascaded(field);
+  MS_DATA[field] = items;
+  const list = $('msList-'+field);
+  const filtered = field === 'hotel'
+    ? items.filter(x => !query || x.label.toLowerCase().includes(query) || x.id.toLowerCase().includes(query))
+    : items.filter(x => !query || x.toLowerCase().includes(query));
+
+  if (!filtered.length) {
+    list.innerHTML = '<div class="ms-empty">No options</div>';
+    return;
+  }
+  if (field === 'hotel') {
+    list.innerHTML = filtered.map(x => {
+      const sel = MS.hotel.has(x.id) || MS.hotel.has(x.name);
+      return `<div class="ms-item ${sel?'selected':''}" onclick="msToggleItem('hotel','${x.id||x.name}',this)">
+        <input type="checkbox" ${sel?'checked':''} onclick="event.stopPropagation()" onchange="msToggleItem('hotel','${x.id||x.name}',this.closest('.ms-item'))" />
+        <label>${x.label}</label><span class="ms-count">${x.id}</span>
+      </div>`;
+    }).join('');
+  } else {
+    list.innerHTML = filtered.map(v => {
+      const sel = MS[field].has(v);
+      return `<div class="ms-item ${sel?'selected':''}" onclick="msToggleItem('${field}','${v.replace(/'/g,"\'")}',this)">
+        <input type="checkbox" ${sel?'checked':''} onclick="event.stopPropagation()" onchange="msToggleItem('${field}','${v.replace(/'/g,"\'")}',this.closest('.ms-item'))" />
+        <label>${v}</label>
+      </div>`;
+    }).join('');
+  }
+}
+
+function msToggleItem(field, value, el) {
+  if (MS[field].has(value)) { MS[field].delete(value); el.classList.remove('selected'); el.querySelector('input').checked = false; }
+  else { MS[field].add(value); el.classList.add('selected'); el.querySelector('input').checked = true; }
+  msRenderBox(field);
+  const downstream = { country: ['state','city','hotel'], state: ['city','hotel'], city: ['hotel'], hotel: [] };
+  downstream[field].forEach(f => {
+    MS[f].forEach(v => { if (!msGetCascaded(f).some(x => (typeof x === 'string' ? x : x.id||x.name) === v)) MS[f].delete(v); });
+    msRenderBox(f);
+    if ($('msDrop-'+f).classList.contains('open')) msRenderList(f);
+  });
+}
+
+function msRenderBox(field) {
+  const box = $('msBox-'+field);
+  const ph = $('msPlaceholder-'+field);
+  const sel = [...MS[field]];
+  const existing = [...box.querySelectorAll('.ms-chip')];
+  existing.forEach(c => c.remove());
+  if (!sel.length) {
+    ph.style.display = '';
+  } else {
+    ph.style.display = 'none';
+    const arrow = box.querySelector('.ms-arrow');
+    sel.forEach(v => {
+      const chip = document.createElement('span');
+      chip.className = 'ms-chip';
+      chip.innerHTML = `${v}<span class="ms-rm" onclick="event.stopPropagation();msRemove('${field}','${v.replace(/'/g,"\'")}')">×</span>`;
+      box.insertBefore(chip, arrow);
+    });
+  }
+}
+
+function msRemove(field, value) {
+  MS[field].delete(value);
+  msRenderBox(field);
+  const downstream = { country: ['state','city','hotel'], state: ['city','hotel'], city: ['hotel'], hotel: [] };
+  downstream[field].forEach(f => {
+    MS[f].forEach(v => { if (!msGetCascaded(f).some(x => (typeof x === 'string' ? x : x.id||x.name) === v)) MS[f].delete(v); });
+    msRenderBox(f);
+  });
+}
+
+function msToggle(field) {
+  const drop = $('msDrop-'+field);
+  const box = $('msBox-'+field);
+  const isOpen = drop.classList.contains('open');
+  document.querySelectorAll('.ms-dropdown.open').forEach(d => { d.classList.remove('open'); d.closest('.ms-wrap').querySelector('.ms-box').classList.remove('open'); });
+  if (!isOpen) {
+    drop.classList.add('open');
+    box.classList.add('open');
+    $('msSearch-'+field).value = '';
+    msRenderList(field);
+    $('msSearch-'+field).focus();
+  }
+}
+
+function msFilter(field) {
+  msRenderList(field);
+}
+
+function populateQuestionDropdowns() {
+  ['country','state','city','hotel'].forEach(f => {
+    $('msBox-'+f).classList.remove('disabled');
+  });
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.ms-wrap')) {
+    document.querySelectorAll('.ms-dropdown.open').forEach(d => { d.classList.remove('open'); d.closest('.ms-wrap').querySelector('.ms-box').classList.remove('open'); });
+  }
+});
 
 renderHHead();renderWI();fillQuestionSummary();setAdvancedVisible(false);
 
