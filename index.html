@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Volt Hotel Recommender v7</title>
+  <title>Volt Hotel Proxy Matcher</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -14,49 +14,55 @@
       --good: #0d9f6e; --good-soft: rgba(13,159,110,0.08); --good-mid: rgba(13,159,110,0.18);
       --warn: #c27803; --warn-soft: rgba(194,120,3,0.08);
       --bad: #dc2626; --bad-soft: rgba(220,38,38,0.08);
+      --purple: #7c3aed; --purple-soft: rgba(124,58,237,0.08);
       --font: 'Outfit', -apple-system, sans-serif; --mono: 'IBM Plex Mono', monospace;
       --radius: 14px; --radius-sm: 8px;
       --shadow-sm: 0 1px 3px rgba(26,29,43,0.06); --shadow-lg: 0 8px 32px rgba(26,29,43,0.1);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; }
-    .app { max-width: 1680px; margin: 0 auto; padding: 28px; }
-    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; gap: 12px; }
+    .app { max-width: 1720px; margin: 0 auto; padding: 28px; }
+
+    /* Header */
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; gap: 12px; flex-wrap: wrap; }
     .header h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; } .header h1 span { color: var(--accent); }
     .header .sub { font-size: 13px; color: var(--text-dim); margin-top: 2px; }
+
+    /* Buttons */
     .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; font-family: var(--font); font-size: 13px; font-weight: 600; border: none; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.15s; }
     .btn-p { background: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(61,90,254,0.25); }
     .btn-p:hover { background: #2d4aee; } .btn-p:disabled { opacity: 0.4; cursor: not-allowed; }
     .btn-g { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
     .btn-g:hover { color: var(--text); border-color: var(--text-dim); }
     .btn-sm { padding: 6px 10px; font-size: 12px; }
+
+    /* Tabs */
     .tabs { display: flex; gap: 0; margin-bottom: 24px; border-bottom: 2px solid var(--border); flex-wrap: wrap; }
     .tab { padding: 10px 22px; font-size: 14px; font-weight: 600; color: var(--text-dim); background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -2px; cursor: pointer; transition: all 0.2s; }
     .tab:hover { color: var(--text); } .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
     .tab .tc { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 18px; padding: 0 6px; margin-left: 6px; background: var(--surface-3); color: var(--text-dim); border-radius: 10px; font-size: 11px; font-weight: 700; font-family: var(--mono); }
     .tab.active .tc { background: var(--accent-soft); color: var(--accent); }
-    .layout { display: grid; grid-template-columns: 320px 1fr; gap: 24px; align-items: start; }
-    .layout.compact { grid-template-columns: 1fr; }
-    @media(max-width:1120px){.layout{grid-template-columns:1fr;}}
+
+    /* Cards */
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow-sm); }
     .card+.card { margin-top: 16px; }
     .card-t { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 14px; }
+
+    /* Fields */
     .field { margin-bottom: 12px; } .field label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
     input[type="number"],input[type="text"],select { width: 100%; padding: 8px 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: var(--font); font-size: 13px; }
     input:focus,select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
     input[type="file"] { width: 100%; padding: 8px; font-size: 12px; }
     .hint { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
-    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
-    .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
-    @media(max-width:900px){.stats-row{grid-template-columns:repeat(2,1fr);}}
+
+    /* Stats row */
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
     .st-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-sm); }
     .st-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); margin-bottom: 6px; }
     .st-val { font-size: 26px; font-weight: 800; font-family: var(--mono); letter-spacing: -1px; }
     .st-sub { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
-    .dq { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 16px; margin-bottom: 16px; font-size: 12px; display: none; }
-    .dq.visible { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-    .dq-tag { padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; font-family: var(--mono); }
-    .dq-tag.ok { background: var(--good-soft); color: var(--good); } .dq-tag.w { background: var(--warn-soft); color: var(--warn); }
+
+    /* Tables */
     .tw { overflow: auto; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-sm); }
     .tw.tall { max-height: 76vh; }
     table { width: 100%; border-collapse: collapse; }
@@ -64,95 +70,33 @@
     th.sortable { cursor: pointer; } th.sortable:hover { color: var(--text-muted); } th.sorted { color: var(--accent); }
     td { padding: 10px 12px; font-size: 12px; border-bottom: 1px solid var(--border-light); vertical-align: middle; white-space: nowrap; }
     tr:hover { background: var(--surface-2); }
+
+    /* Badges */
     .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
     .badge.good { background: var(--good-soft); color: var(--good); } .badge.warn { background: var(--warn-soft); color: var(--warn); }
     .badge.bad { background: var(--bad-soft); color: var(--bad); } .badge.info { background: var(--accent-soft); color: var(--accent); }
     .badge.neutral { background: var(--surface-3); color: var(--text-dim); }
+    .badge.purple { background: var(--purple-soft); color: var(--purple); }
+
+    /* Score tooltip */
     .score-cell { position: relative; cursor: help; }
     .score-tip { display: none; position: fixed; background: var(--text); color: #fff; border-radius: var(--radius-sm); padding: 12px 14px; min-width: 250px; z-index: 9999; box-shadow: var(--shadow-lg); font-size: 11px; }
     .score-cell:hover .score-tip { display: block; }
     .st-r { display: flex; justify-content: space-between; margin-bottom: 3px; } .st-r .l { color: #a0a8c0; } .st-r .v { font-family: var(--mono); font-weight: 600; }
     .st-b { height: 3px; background: #2a2d3e; border-radius: 2px; margin-bottom: 6px; } .st-bf { height: 100%; border-radius: 2px; background: #6c8cff; }
     .st-d { border-top: 1px solid #333; margin: 5px 0; }
+
+    /* Supplier detail */
     details summary { cursor: pointer; color: var(--accent); font-weight: 600; font-size: 12px; list-style: none; }
     details summary::-webkit-details-marker { display: none; }
     .sup-box { margin-top: 8px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px; overflow: auto; }
     .sup-box table { min-width: 700px; } .sup-box th { background: var(--surface-3); }
-    .lb-bar { width: 120px; height: 6px; background: var(--surface-3); border-radius: 3px; display: inline-block; vertical-align: middle; margin-left: 8px; }
-    .lb-fill { height: 100%; border-radius: 3px; background: var(--accent); } .lb-fill.hi { background: var(--good); }
-    /* Optimizer */
-    .plan-chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); font-size: 12px; font-weight: 600; }
-    .plan-chip .po { width: 20px; height: 20px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-family: var(--mono); }
-    .plan-chip.marginal { opacity: 0.5; border-style: dashed; }
-    .plan-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-    .opt-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 16px; }
-    @media(max-width:900px){.opt-stats{grid-template-columns:repeat(2,1fr);}}
-    .opt-c { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; text-align: center; }
-    .opt-v { font-size: 22px; font-weight: 800; font-family: var(--mono); letter-spacing: -0.5px; }
-    .opt-v.good { color: var(--good); } .opt-v.warn { color: var(--warn); } .opt-v.bad { color: var(--bad); }
-    .opt-l { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); margin-bottom: 4px; }
-    .opt-s { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
-    /* Coverage sim */
-    .sp-picker { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-    .sp-chip { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: all 0.15s; user-select: none; font-size: 12px; font-weight: 600; }
-    .sp-chip:hover { border-color: var(--accent); background: var(--accent-soft); }
-    .sp-chip.sel { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-    .sp-chip .ck { width: 16px; height: 16px; border: 2px solid var(--border); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; }
-    .sp-chip.sel .ck { background: var(--accent); border-color: var(--accent); color: #fff; }
-    .sp-chip .ct { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
-    .cov-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 20px; }
-    @media(max-width:900px){.cov-stats{grid-template-columns:1fr;}}
-    .cov-c { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; text-align: center; }
-    .cov-v { font-size: 32px; font-weight: 800; font-family: var(--mono); letter-spacing: -1px; }
-    .cov-v.good { color: var(--good); } .cov-v.warn { color: var(--warn); } .cov-v.bad { color: var(--bad); }
-    .cov-l { font-size: 11px; color: var(--text-dim); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
-    .cov-s { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-    .tier-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(150px,1fr)); gap: 10px; margin-bottom: 20px; }
-    .tier-c { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; text-align: center; position: relative; overflow: hidden; }
-    .tier-c::before { content:''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--surface-3); }
-    .tier-c.tg::before { background: var(--good); } .tier-c.tw::before { background: var(--warn); } .tier-c.tb::before { background: var(--bad); }
-    .tier-n { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); margin-bottom: 6px; }
-    .tier-v { font-size: 22px; font-weight: 800; font-family: var(--mono); letter-spacing: -0.5px; }
-    .tier-d { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
-    .cov-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
-    .cov-bar-label { font-size: 11px; font-weight: 600; color: var(--text-dim); width: 80px; text-align: right; flex-shrink: 0; }
-    .cov-bar-track { flex: 1; height: 20px; background: var(--surface-3); border-radius: 4px; overflow: hidden; display: flex; }
-    .cov-bar-covered { height: 100%; background: var(--good-mid); } .cov-bar-gap { height: 100%; background: var(--bad-soft); }
-    .cov-bar-pct { font-size: 11px; font-family: var(--mono); font-weight: 600; width: 50px; flex-shrink: 0; }
-    .tog { display: flex; gap: 2px; background: var(--surface-2); border-radius: var(--radius-sm); padding: 2px; margin-bottom: 12px; width: fit-content; }
-    .tog-b { padding: 6px 16px; font-size: 12px; font-weight: 600; color: var(--text-dim); background: none; border: none; border-radius: 6px; cursor: pointer; }
-    .tog-b:hover { color: var(--text); } .tog-b.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }
-    .tog-b .tc2 { font-family: var(--mono); font-size: 11px; margin-left: 4px; color: var(--text-dim); }
-    tr.cov-y { background: rgba(13,159,110,0.03); } tr.cov-n { background: rgba(220,38,38,0.03); }
-    .hidden { display: none !important; }
-    .empty { text-align: center; padding: 60px 20px; color: var(--text-dim); }
-    .empty .icon { font-size: 36px; margin-bottom: 10px; } .empty p { font-size: 14px; }
 
-    .rank-proof { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-sm); margin-bottom: 16px; }
-    .rank-proof.hidden { display:none; }
-    .rp-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:12px; }
-    .rp-title { font-size: 14px; font-weight: 700; }
-    .rp-sub { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
-    .rp-grid { display:grid; grid-template-columns: 1.15fr 1fr 1fr; gap:12px; }
-    .rp-card { border:1px solid var(--border); border-radius: var(--radius-sm); padding:12px; background: var(--surface-2); }
-    .rp-card.main { background: var(--surface); }
-    .rp-name { font-size:13px; font-weight:700; margin-bottom:4px; }
-    .rp-rank { font-size:11px; color: var(--text-dim); font-family: var(--mono); margin-bottom:8px; }
-    .rp-points { display:grid; grid-template-columns: repeat(3,1fr); gap:8px; margin-bottom:10px; }
-    .rp-pt { background: var(--surface); border:1px solid var(--border); border-radius: 8px; padding:8px; text-align:center; }
-    .rp-pt .k { font-size:10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: .05em; }
-    .rp-pt .v { font-size:18px; font-weight:800; font-family: var(--mono); }
-    .rp-list { font-size:12px; color: var(--text-muted); }
-    .rp-list li { margin-left: 16px; margin-bottom: 4px; }
-    .rp-table { width:100%; border-collapse: collapse; margin-top: 8px; }
-    .rp-table th, .rp-table td { padding:8px 10px; font-size:11px; border-bottom:1px solid var(--border-light); white-space: nowrap; }
-    .rp-table th { background: var(--surface-2); position: static; }
-    .delta-good { color: var(--good); font-weight:700; }
-    .delta-bad { color: var(--bad); font-weight:700; }
-    .delta-neutral { color: var(--text-dim); font-weight:700; }
-    .why-btn { margin-left:8px; border:none; background:transparent; color: var(--accent); font-size:11px; font-weight:700; cursor:pointer; }
-    .why-btn:hover { text-decoration: underline; }
-
+    /* DQ banner */
+    .dq { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 16px; margin-bottom: 16px; font-size: 12px; display: none; }
+    .dq.visible { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .dq-tag { padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; font-family: var(--mono); }
+    .dq-tag.ok { background: var(--good-soft); color: var(--good); } .dq-tag.w { background: var(--warn-soft); color: var(--warn); }
 
     /* Question-first flow */
     .question-shell { margin-bottom: 22px; }
@@ -160,13 +104,14 @@
     .question-head { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:16px; flex-wrap:wrap; }
     .question-title { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
     .question-sub { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
-    .q-grid { display:grid; grid-template-columns: repeat(2,minmax(260px,1fr)); gap:14px; }
+    .q-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:14px; }
     .q-item { background: var(--surface-2); border:1px solid var(--border); border-radius: 12px; padding:14px; }
     .q-num { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:999px; background: var(--accent-soft); color: var(--accent); font-family: var(--mono); font-size: 12px; font-weight: 700; margin-bottom:8px; }
     .q-label { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
     .q-help { font-size: 11px; color: var(--text-dim); margin-top: 6px; }
-    .question-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
-    .analysis-shell.hidden, .post-actions.hidden { display:none !important; }
+    .question-actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:16px; align-items: flex-end; }
+
+    /* Calc overlay */
     .calc-overlay { position:fixed; inset:0; background: rgba(250,251,253,0.82); backdrop-filter: blur(4px); display:none; align-items:center; justify-content:center; z-index:200; }
     .calc-overlay.show { display:flex; }
     .calc-card { width:min(420px,92vw); background: var(--surface); border:1px solid var(--border); border-radius: 18px; box-shadow: var(--shadow-lg); padding:26px; text-align:center; }
@@ -174,1006 +119,858 @@
     .calc-title { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
     .calc-sub { font-size: 13px; color: var(--text-dim); }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .analysis-shell { display:grid; grid-template-columns: 1fr; gap:16px; }
-    .post-actions { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:14px; flex-wrap:wrap; }
-    .post-note { font-size:12px; color: var(--text-dim); }
-    .context-strip { display:flex; gap:8px; flex-wrap:wrap; }
-    .context-pill { display:inline-flex; align-items:center; gap:6px; padding:7px 10px; border-radius:999px; background: var(--surface); border:1px solid var(--border); font-size:12px; color: var(--text-muted); }
-    .hotel-name-cell { white-space: normal !important; max-width: 320px; line-height: 1.35; }
-    .hotel-name-main { display:inline; }
-    .why-inline { display:inline-flex; align-items:center; gap:8px; flex-wrap:wrap; }
-    .compare-box { background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding:18px; margin-bottom:16px; box-shadow: var(--shadow-sm); }
-    .compare-head { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:12px; flex-wrap:wrap; }
-    .compare-grid { display:grid; grid-template-columns: 1fr 1fr auto; gap:10px; align-items:end; }
-    .compare-result { margin-top:14px; }
-    .compare-summary { display:grid; grid-template-columns: repeat(3,1fr); gap:10px; margin-bottom:12px; }
-    .compare-mini { background: var(--surface-2); border:1px solid var(--border); border-radius: 12px; padding:12px; }
-    .compare-mini .k { font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-dim); margin-bottom:4px; }
-    .compare-mini .v { font-size:18px; font-weight:800; font-family:var(--mono); }
-    .compare-table td, .compare-table th { white-space: normal; }
-    .compare-empty { font-size:12px; color:var(--text-dim); padding:8px 0; }
-    @media(max-width:900px){
-      .q-grid, .compare-grid, .compare-summary { grid-template-columns:1fr; }
+
+    /* Proxy cards */
+    .proxy-group { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 14px; box-shadow: var(--shadow-sm); overflow: hidden; }
+    .proxy-header { padding: 14px 18px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; cursor: pointer; transition: background 0.15s; }
+    .proxy-header:hover { background: var(--surface-2); }
+    .proxy-header .ph-name { font-size: 14px; font-weight: 700; }
+    .proxy-header .ph-id { font-size: 11px; font-family: var(--mono); color: var(--text-dim); }
+    .proxy-header .ph-star { font-size: 12px; color: var(--warn); }
+    .proxy-header .ph-meta { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+    .proxy-body { padding: 0 18px 16px; display: none; }
+    .proxy-group.open .proxy-body { display: block; }
+    .proxy-group.open .proxy-chevron { transform: rotate(180deg); }
+    .proxy-chevron { font-size: 10px; color: var(--text-dim); transition: transform 0.2s; }
+
+    /* Proxy match row */
+    .proxy-match { display: grid; grid-template-columns: 40px 1fr 80px 80px 90px 80px 90px 70px; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border-light); font-size: 12px; }
+    .proxy-match:last-child { border-bottom: none; }
+    .proxy-match .pm-rank { font-family: var(--mono); font-weight: 700; color: var(--text-dim); }
+    .proxy-match .pm-name { font-weight: 600; white-space: normal; line-height: 1.3; }
+    .proxy-match .pm-sub { font-size: 11px; color: var(--text-dim); }
+
+    @media(max-width:1000px){
+      .proxy-match { grid-template-columns: 30px 1fr repeat(3, 70px); font-size: 11px; }
+      .proxy-match .pm-hide { display: none; }
     }
 
-    ::-webkit-scrollbar { width: 6px; height: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-    @media(max-width:900px){#tab-settings>div{grid-template-columns:1fr!important;}}
+    /* Toggle view */
+    .tog { display: flex; gap: 2px; background: var(--surface-2); border-radius: var(--radius-sm); padding: 2px; margin-bottom: 12px; width: fit-content; }
+    .tog-b { padding: 6px 16px; font-size: 12px; font-weight: 600; color: var(--text-dim); background: none; border: none; border-radius: 6px; cursor: pointer; }
+    .tog-b:hover { color: var(--text); } .tog-b.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }
+    .tog-b .tc2 { font-family: var(--mono); font-size: 11px; margin-left: 4px; color: var(--text-dim); }
 
-    /* Multi-select dropdown */
-    .ms-wrap { position: relative; }
-    .ms-box { min-height: 38px; padding: 4px 8px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; transition: border-color 0.15s; }
-    .ms-box:focus-within, .ms-box.open { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-    .ms-box.disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
-    .ms-chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: var(--accent-soft); color: var(--accent); border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
-    .ms-chip .ms-rm { cursor: pointer; font-size: 12px; line-height: 1; opacity: 0.7; }
-    .ms-chip .ms-rm:hover { opacity: 1; }
-    .ms-placeholder { font-size: 13px; color: var(--text-dim); user-select: none; flex: 1; }
-    .ms-arrow { margin-left: auto; font-size: 10px; color: var(--text-dim); flex-shrink: 0; transition: transform 0.15s; }
-    .ms-box.open .ms-arrow { transform: rotate(180deg); }
-    .ms-dropdown { display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow-lg); z-index: 1000; overflow: hidden; }
-    .ms-dropdown.open { display: block; }
-    .ms-search { padding: 8px 10px; border-bottom: 1px solid var(--border-light); }
-    .ms-search input { width: 100%; padding: 5px 8px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; font-size: 12px; font-family: var(--font); color: var(--text); }
-    .ms-search input:focus { outline: none; border-color: var(--accent); }
-    .ms-list { max-height: 200px; overflow-y: auto; }
-    .ms-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; font-size: 12px; cursor: pointer; transition: background 0.1s; }
-    .ms-item:hover { background: var(--surface-2); }
-    .ms-item.selected { background: var(--accent-soft); }
-    .ms-item input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--accent); flex-shrink: 0; cursor: pointer; }
-    .ms-item label { cursor: pointer; flex: 1; user-select: none; color: var(--text); }
-    .ms-empty { padding: 12px 10px; font-size: 12px; color: var(--text-dim); text-align: center; }
-    .ms-count { font-size: 10px; color: var(--text-dim); margin-left: auto; font-family: var(--mono); }
+    .hidden { display: none !important; }
+    .empty { text-align: center; padding: 60px 20px; color: var(--text-dim); }
+    .empty .icon { font-size: 36px; margin-bottom: 10px; } .empty p { font-size: 14px; }
+    .hotel-name-cell { white-space: normal !important; max-width: 320px; line-height: 1.35; }
+
+    .context-strip { display:flex; gap:8px; flex-wrap:wrap; margin-top: 8px; }
+    .context-pill { display:inline-flex; align-items:center; gap:6px; padding:7px 10px; border-radius:999px; background: var(--surface); border:1px solid var(--border); font-size:12px; color: var(--text-muted); }
+
+    .post-actions { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:14px; flex-wrap:wrap; }
+    .post-note { font-size:12px; color: var(--text-dim); }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* Distance bar */
+    .dist-bar { width: 60px; height: 5px; background: var(--surface-3); border-radius: 3px; display: inline-block; vertical-align: middle; margin-left: 4px; }
+    .dist-fill { height: 100%; border-radius: 3px; }
+
+    /* Summary cards for proxy tab */
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .sum-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; text-align: center; box-shadow: var(--shadow-sm); }
+    .sum-v { font-size: 28px; font-weight: 800; font-family: var(--mono); letter-spacing: -1px; }
+    .sum-v.good { color: var(--good); } .sum-v.warn { color: var(--warn); } .sum-v.bad { color: var(--bad); }
+    .sum-l { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); margin-bottom: 6px; }
+    .sum-s { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
   </style>
 </head>
 <body>
 <div class="app">
   <div class="header">
-    <div><h1>Volt <span>Hotel Recommender</span></h1><div class="sub">v7 — Hotel ranking · Supplier leaderboard · Optimizer · Coverage simulator</div></div>
+    <div>
+      <h1>Volt <span>Hotel Proxy Matcher</span></h1>
+      <div class="sub">v1 — Upload your hotels, find direct matches &amp; nearby proxy alternatives with full supplier scoring</div>
+    </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <button class="btn btn-g" id="exportHotels" disabled>↓ Hotels CSV</button>
-      <button class="btn btn-g" id="exportPlan" disabled>↓ Plan CSV</button>
+      <button class="btn btn-g" id="exportDirect" disabled>↓ Direct Matches CSV</button>
+      <button class="btn btn-g" id="exportProxy" disabled>↓ Proxy CSV</button>
     </div>
   </div>
 
-  <div class="tabs">
-    <button class="tab active" data-tab="hotels">Top Hotels <span class="tc" id="tc1">0</span></button>
-    <button class="tab" data-tab="suppliers">Supplier Leaderboard <span class="tc" id="tc2">0</span></button>
-    <button class="tab" data-tab="optimizer">Optimizer</button>
-    <button class="tab" data-tab="simulator">Coverage Simulator</button>
-    <button class="tab" data-tab="settings">Settings</button>
-  </div>
+  <div class="calc-overlay" id="calcOverlay"><div class="calc-card"><div class="calc-spinner"></div><div class="calc-title">Matching hotels &amp; finding proxies</div><div class="calc-sub">Scoring all hotels, computing distances, ranking proxy candidates.</div></div></div>
 
-  <div class="calc-overlay" id="calcOverlay"><div class="calc-card"><div class="calc-spinner"></div><div class="calc-title">Calculating your hotel analysis</div><div class="calc-sub">Applying the exact same logic. Just packaging the output in a cleaner way.</div></div></div>
-
+  <!-- QUESTION SHELL -->
   <div class="question-shell" id="questionShell">
     <div class="question-card">
       <div class="question-head">
         <div>
-          <div class="question-title">Start with a few optional questions</div>
-          <div class="question-sub">Leave anything blank if you do not want to constrain the analysis. This does not change any logic — it only pre-fills the existing filters and optimizer fields.</div>
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button class="btn btn-g" id="questionReset">Reset answers</button>
+          <div class="question-title">Upload your data</div>
+          <div class="question-sub">Two CSVs needed: your base hotel×supplier data and the list of hotels you want to check.</div>
         </div>
       </div>
       <div class="q-grid">
         <div class="q-item">
           <div class="q-num">1</div>
-          <div class="q-label">Top how many hotels?</div>
-          <input type="number" id="qTopN" placeholder="Leave blank to use existing default" />
-          <div class="q-help">Optional. Maps to the existing Top N filter.</div>
+          <div class="q-label">Base CSV (Hotel × Supplier data)</div>
+          <input type="file" id="csvBase" accept=".csv" />
+          <div class="q-help">Same as v7 format + Latitude, Longitude columns. This is your full hotel universe with supplier booking data.</div>
         </div>
         <div class="q-item">
           <div class="q-num">2</div>
-          <div class="q-label">Which countries, states, cities, or hotel names?</div>
-          <div style="display:grid;grid-template-columns:repeat(2,minmax(140px,1fr));gap:8px;">
-            <div class="ms-wrap" id="msWrap-country">
-              <div class="ms-box disabled" id="msBox-country" onclick="msToggle('country')">
-                <span class="ms-placeholder" id="msPlaceholder-country">Country</span>
-                <span class="ms-arrow">&#9660;</span>
-              </div>
-              <div class="ms-dropdown" id="msDrop-country">
-                <div class="ms-search"><input type="text" placeholder="Search..." id="msSearch-country" oninput="msFilter('country')" onclick="event.stopPropagation()" /></div>
-                <div class="ms-list" id="msList-country"></div>
-              </div>
-            </div>
-            <div class="ms-wrap" id="msWrap-state">
-              <div class="ms-box disabled" id="msBox-state" onclick="msToggle('state')">
-                <span class="ms-placeholder" id="msPlaceholder-state">State</span>
-                <span class="ms-arrow">&#9660;</span>
-              </div>
-              <div class="ms-dropdown" id="msDrop-state">
-                <div class="ms-search"><input type="text" placeholder="Search..." id="msSearch-state" oninput="msFilter('state')" onclick="event.stopPropagation()" /></div>
-                <div class="ms-list" id="msList-state"></div>
-              </div>
-            </div>
-            <div class="ms-wrap" id="msWrap-city">
-              <div class="ms-box disabled" id="msBox-city" onclick="msToggle('city')">
-                <span class="ms-placeholder" id="msPlaceholder-city">City</span>
-                <span class="ms-arrow">&#9660;</span>
-              </div>
-              <div class="ms-dropdown" id="msDrop-city">
-                <div class="ms-search"><input type="text" placeholder="Search..." id="msSearch-city" oninput="msFilter('city')" onclick="event.stopPropagation()" /></div>
-                <div class="ms-list" id="msList-city"></div>
-              </div>
-            </div>
-            <div class="ms-wrap" id="msWrap-hotel">
-              <div class="ms-box disabled" id="msBox-hotel" onclick="msToggle('hotel')">
-                <span class="ms-placeholder" id="msPlaceholder-hotel">Hotel name / ID</span>
-                <span class="ms-arrow">&#9660;</span>
-              </div>
-              <div class="ms-dropdown" id="msDrop-hotel">
-                <div class="ms-search"><input type="text" placeholder="Search..." id="msSearch-hotel" oninput="msFilter('hotel')" onclick="event.stopPropagation()" /></div>
-                <div class="ms-list" id="msList-hotel"></div>
-              </div>
-            </div>
-          </div>
-          <div class="q-help">Optional. Select multiple. Picking a country filters states, cities, and hotels below it.</div>
+          <div class="q-label">User CSV (Hotels to check)</div>
+          <input type="file" id="csvUser" accept=".csv" />
+          <div class="q-help">Columns: Hotel ID, Hotel Name, Star Category, Latitude, Longitude. These are the hotels you want to find matches and proxies for.</div>
         </div>
         <div class="q-item">
           <div class="q-num">3</div>
-          <div class="q-label">Any supplier to exclude?</div>
-          <input type="text" id="qExcludeSup" placeholder="e.g. Agoda, Smyrooms" />
-          <div class="q-help">Optional. Comma-separated. Maps to the existing optimizer exclude field.</div>
+          <div class="q-label">Proxy search radius (km)</div>
+          <input type="number" id="qRadius" value="1" min="0.1" max="50" step="0.1" />
+          <div class="q-help">Default 1 km. Hotels within this radius from the user hotel are proxy candidates.</div>
         </div>
         <div class="q-item">
           <div class="q-num">4</div>
-          <div class="q-label">Any supplier to force include?</div>
-          <input type="text" id="qForceSup" placeholder="e.g. TBO, EAN" />
-          <div class="q-help">Optional. Comma-separated. Maps to the existing optimizer force-include field.</div>
+          <div class="q-label">Star category tolerance</div>
+          <select id="qStarTol">
+            <option value="0">Exact match only</option>
+            <option value="1" selected>Same or +1 star</option>
+          </select>
+          <div class="q-help">A 3-star hotel with "+1" tolerance finds 3★ and 4★ proxies.</div>
+        </div>
+        <div class="q-item">
+          <div class="q-num">5</div>
+          <div class="q-label">Max proxies per hotel</div>
+          <input type="number" id="qMaxProxy" value="5" min="1" max="20" />
+          <div class="q-help">Show top N proxy candidates per hotel, ranked by fitness score.</div>
+        </div>
+        <div class="q-item">
+          <div class="q-num">6</div>
+          <div class="q-label">Proxy fitness weighting</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;">
+            <div>
+              <label style="font-size:11px;color:var(--text-dim);">Hotel Score weight</label>
+              <input type="number" id="qWScore" value="70" min="0" max="100" />
+            </div>
+            <div>
+              <label style="font-size:11px;color:var(--text-dim);">Distance weight</label>
+              <input type="number" id="qWDist" value="30" min="0" max="100" />
+            </div>
+          </div>
+          <div class="q-help">How much to weight v7 hotel score vs proximity. Default 70/30 favors high-performing hotels.</div>
         </div>
       </div>
       <div class="question-actions">
-        <div class="field" style="margin:0;min-width:280px;flex:1 1 320px;">
-          <label>Upload CSV</label>
-          <input type="file" id="csvFileTop" accept=".csv" />
-          <div class="hint">Required once. Uses the same CSV structure as before.</div>
-        </div>
-        <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;">
-          <button class="btn btn-p" id="analyzeBtn">Analyze</button>
-          <button class="btn btn-g" id="showAdvancedBtn">Show advanced filters after analyze</button>
-        </div>
+        <button class="btn btn-p" id="analyzeBtn" style="padding:12px 28px;font-size:14px;">Analyze</button>
       </div>
     </div>
   </div>
 
+  <!-- POST-ANALYSIS -->
   <div class="post-actions hidden" id="postActions">
     <div>
-      <div class="post-note">Questions applied. The analysis below uses the same underlying logic as before.</div>
+      <div class="post-note">Analysis complete. Showing direct matches and proxy recommendations.</div>
       <div class="context-strip" id="contextStrip"></div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <button class="btn btn-g" id="editQuestionsBtn">Edit questions</button>
-      <button class="btn btn-g" id="toggleAdvancedBtn">Hide advanced panel</button>
+      <button class="btn btn-g" id="editSettingsBtn">Edit settings</button>
     </div>
   </div>
 
-  <div class="analysis-shell hidden" id="analysisShell">
-  <div class="dq" id="dqBanner"></div>
+  <!-- ANALYSIS SHELL -->
+  <div class="hidden" id="analysisShell">
+    <div class="dq" id="dqBanner"></div>
 
-  <div class="layout compact" id="mainLayout">
-    <div id="advancedSidebar" class="hidden">
-      <div class="card"><div class="card-t">Data</div>
-        <div class="field"><label>Upload CSV</label><input type="file" id="csvFile" accept=".csv" />
-        <div class="hint">Hotel ID, Supplier Name, Supplier Bookings, Total Hotel Bookings, Last HotelxSupplier Booking, Last Hotel Booking, Supplier Room Nights, Total Hotel Room Nights</div></div>
-      </div>
-      <div class="card"><div class="card-t">Hotel Filters</div>
-        <div class="field"><label>Search</label><input type="text" id="searchInput" placeholder="Hotel name or ID..." /></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <div class="field"><label>Country</label><select id="countryF"><option value="">All</option></select></div>
-          <div class="field"><label>State</label><select id="stateF"><option value="">All</option></select></div>
-          <div class="field"><label>City</label><select id="cityF"><option value="">All</option></select></div>
-          <div class="field"><label>Rating</label><select id="ratingF"><option value="">All</option></select></div>
+    <div class="tabs">
+      <button class="tab active" data-tab="summary">Summary</button>
+      <button class="tab" data-tab="direct">Direct Matches <span class="tc" id="tcDirect">0</span></button>
+      <button class="tab" data-tab="notfound">No Match <span class="tc" id="tcNotFound">0</span></button>
+      <button class="tab" data-tab="proxy">Proxy Recommendations <span class="tc" id="tcProxy">0</span></button>
+    </div>
+
+    <!-- Tab: Summary -->
+    <div id="tab-summary">
+      <div class="stats-row" id="summaryStats"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="card">
+          <div class="card-t">Match Overview</div>
+          <div id="matchOverview"></div>
         </div>
-        <div class="field"><label>Verdict</label><select id="verdictF"><option value="">All</option><option>Good Volt Fit</option><option>Good but Top-Heavy</option><option>Usable</option><option>Too Concentrated</option><option>Too Fragmented</option><option>Weak Backbone</option><option>Disqualified</option><option>Poor Fit</option></select></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <div class="field"><label>Min Score</label><input type="number" id="minScore" value="0" /></div>
-          <div class="field"><label>Max Score</label><input type="number" id="maxScore" value="100" /></div>
-          <div class="field"><label>Min Bookings</label><input type="number" id="minBookings" value="5" /></div>
-          <div class="field"><label>Min M. Suppliers</label><input type="number" id="minSuppliers" value="3" /></div>
-          <div class="field"><label>Max Top Share %</label><input type="number" id="maxTopShare" value="100" /><div class="hint">Exclude if #1 supplier exceeds</div></div>
-          <div class="field"><label>Max Recency (d)</label><input type="number" id="maxRecency" value="" placeholder="No limit" /></div>
+        <div class="card">
+          <div class="card-t">Proxy Coverage</div>
+          <div id="proxyCoverage"></div>
         </div>
-        <div class="field"><label>Top N</label><input type="number" id="topN" value="100" /><div class="hint">Applied after all filters</div></div>
-      </div>
-      <div class="card"><div class="card-t">Optimizer Config</div>
-        <div class="field"><label>Max suppliers to activate</label><input type="number" id="maxSup" value="8" /></div>
-        <div class="field"><label>Marginal cutoff %</label><input type="number" id="marginalCutoff" value="0.5" step="0.1" /><div class="hint">If a supplier adds less than this % hotel coverage, flag as "marginal"</div></div>
-        <div class="field"><label>Exclude suppliers</label><input type="text" id="excludeSup" placeholder="e.g. Agoda, Smyrooms" /><div class="hint">Comma-separated. Optimizer will skip these.</div></div>
-        <div class="field"><label>Force include</label><input type="text" id="forceSup" placeholder="e.g. TBO, EAN" /><div class="hint">Always included first, in order listed.</div></div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-p" id="runBtn">Run</button>
-        <button class="btn btn-p" id="optBtn">Optimize</button>
-        <button class="btn btn-g" id="resetBtn">Reset</button>
       </div>
     </div>
-    <div>
-      <!-- Tab: Hotels -->
-      <div id="tab-hotels">
-        <div class="stats-row"><div class="st-card"><div class="st-label">Hotels in CSV</div><div class="st-val" id="s1">0</div></div><div class="st-card"><div class="st-label">After Filters</div><div class="st-val" id="s2">0</div></div><div class="st-card"><div class="st-label">Avg Score</div><div class="st-val" id="s3">—</div></div><div class="st-card"><div class="st-label">Good Volt Fit</div><div class="st-val" id="s4">0</div><div class="st-sub" id="s4s"></div></div></div>
-        <div class="compare-box" id="compareBox">
-          <div class="compare-head">
-            <div>
-              <div class="question-title" style="font-size:18px;">Compare any two hotels</div>
-              <div class="question-sub">Pick any two hotels from the filtered list. This is frontend-only explainability — no scoring or ranking logic changes.</div>
-            </div>
-          </div>
-          <div class="compare-grid">
-            <div class="field"><label>Hotel A</label><select id="compareA"><option value="">Select a hotel</option></select></div>
-            <div class="field"><label>Hotel B</label><select id="compareB"><option value="">Select a hotel</option></select></div>
-            <button class="btn btn-p" id="compareBtn" style="height:42px;">Compare</button>
-          </div>
-          <div class="compare-result" id="compareResult"><div class="compare-empty">Choose any two hotels after analyzing.</div></div>
-        </div>
-        <div class="rank-proof hidden" id="rankProof"></div>
-        <div class="tw tall"><table><thead><tr id="hHead"></tr></thead><tbody id="hBody"><tr><td colspan="14" class="empty"><div class="icon">📊</div><p>Upload a CSV to rank hotels.</p></td></tr></tbody></table></div>
+
+    <!-- Tab: Direct Matches -->
+    <div id="tab-direct" class="hidden">
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Hotels from your list that exist in the base data. Full v7 scoring with supplier breakdown.</p>
+      <div class="stats-row" id="directStats"></div>
+      <div class="tw tall" id="directTable">
+        <div class="empty"><p>No direct matches found.</p></div>
       </div>
-      <!-- Tab: Leaderboard -->
-      <div id="tab-suppliers" class="hidden">
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Suppliers ranked by meaningful presence across your Top N hotels. <strong>Priority score</strong> = hotel score × supplier share, summed — higher means the supplier is strong in your best hotels.</p>
-        <div class="tw tall" id="lbWrap"><div class="empty"><p>Run first.</p></div></div>
+    </div>
+
+    <!-- Tab: Not Found -->
+    <div id="tab-notfound" class="hidden">
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Hotels from your list that were <strong>not found</strong> in the base data. Proxy recommendations are still available for these.</p>
+      <div class="tw tall" id="notFoundTable">
+        <div class="empty"><p>All hotels were found!</p></div>
       </div>
-      <!-- Tab: Optimizer -->
-      <div id="tab-optimizer" class="hidden">
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Greedy marginal gain optimizer. Each step picks the supplier that adds the most new hotel coverage, with booking-weight and priority as tiebreakers. Suppliers below the marginal cutoff are flagged.</p>
-        <div class="opt-stats">
-          <div class="opt-c"><div class="opt-l">Suppliers</div><div class="opt-v" id="o1">—</div><div class="opt-s" id="o1s"></div></div>
-          <div class="opt-c"><div class="opt-l">Hotel Coverage</div><div class="opt-v" id="o2">—</div><div class="opt-s" id="o2s"></div></div>
-          <div class="opt-c"><div class="opt-l">Booking Coverage</div><div class="opt-v" id="o3">—</div><div class="opt-s" id="o3s"></div></div>
-          <div class="opt-c"><div class="opt-l">Avg Share</div><div class="opt-v" id="o4">—</div></div>
-        </div>
-        <div class="plan-chips" id="planChips"></div>
-        <div class="tw" id="planWrap"><div class="empty"><p>Click "Optimize" to generate a plan.</p></div></div>
-        <div style="margin-top:12px;"><button class="btn btn-g btn-sm" id="applyPlan">Apply plan to simulator →</button></div>
-      </div>
-      <!-- Tab: Simulator -->
-      <div id="tab-simulator" class="hidden">
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Manually select suppliers and see coverage. Use this to test alternatives to the optimizer's plan.</p>
-        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
-          <input type="text" id="supSearch" placeholder="Search supplier..." style="width:200px;" />
-          <button class="btn btn-g btn-sm" id="clearSup">Clear all</button>
-          <button class="btn btn-g btn-sm" id="selTop5">Select top 5</button>
-        </div>
-        <div class="sp-picker" id="supPicker"></div>
-        <div class="cov-stats">
-          <div class="cov-c"><div class="cov-v" id="c1">—</div><div class="cov-l">Hotels Covered</div><div class="cov-s" id="c1s"></div></div>
-          <div class="cov-c"><div class="cov-v" id="c2">—</div><div class="cov-l">Booking Coverage</div><div class="cov-s" id="c2s"></div></div>
-          <div class="cov-c"><div class="cov-v" id="c3">—</div><div class="cov-l">Avg Share</div><div class="cov-s" id="c3s"></div></div>
-        </div>
-        <div class="tier-grid" id="tierGrid"></div>
-        <div id="covDistro" style="margin-bottom:20px;"></div>
-        <div class="tog">
-          <button class="tog-b active" data-v="gaps" onclick="setCovView('gaps',this)">Uncovered <span class="tc2" id="gapN">0</span></button>
-          <button class="tog-b" data-v="covered" onclick="setCovView('covered',this)">Covered <span class="tc2" id="covN">0</span></button>
-          <button class="tog-b" data-v="all" onclick="setCovView('all',this)">All</button>
-        </div>
-        <div class="tw tall" id="covWrap"><div class="empty"><p>Select suppliers.</p></div></div>
-      </div>
-      <!-- Tab: Settings -->
-      <div id="tab-settings" class="hidden">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-          <div class="card"><div class="card-t">Scoring Weights</div>
-            <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px;">Auto-normalizes to 100%.</p>
-            <div id="wInputs"></div>
-            <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:12px;color:var(--text-dim);"><span>Total</span><span id="wTotal" style="font-family:var(--mono);font-weight:700;">100%</span></div>
-          </div>
-          <div class="card"><div class="card-t">Penalty Thresholds</div>
-            <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px;">% score reduction. Multiplicative. Set to 0 to disable.</p>
-            <div style="font-size:11px;color:var(--text-dim);background:var(--surface-2);border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:12px;">Hard disqualifiers (score = 0): &lt;5 bookings · &lt;2 meaningful suppliers</div>
-            <div class="field"><label>Over-concentrated (&gt;78%)</label><input type="number" id="pOC" value="28" /></div>
-            <div class="field"><label>Top-heavy (60–78%)</label><input type="number" id="pTH" value="14" /></div>
-            <div class="field"><label>Fragmented (top3 &lt;50%)</label><input type="number" id="pFR" value="18" /></div>
-            <div class="field"><label>Weak backbone (&lt;55%)</label><input type="number" id="pWB" value="12" /></div>
-          </div>
+    </div>
+
+    <!-- Tab: Proxy Recommendations -->
+    <div id="tab-proxy" class="hidden">
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">For each of your uploaded hotels, nearby alternatives from the base data ranked by proxy fitness (hotel score × distance). Higher fitness = better substitute.</p>
+      <div class="summary-grid" id="proxyStats"></div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;">
+        <input type="text" id="proxySearch" placeholder="Search hotel name or ID..." style="width:260px;" />
+        <div class="tog" style="margin-bottom:0;">
+          <button class="tog-b active" data-v="all" onclick="setProxyFilter('all',this)">All <span class="tc2" id="pfAll">0</span></button>
+          <button class="tog-b" data-v="matched" onclick="setProxyFilter('matched',this)">Matched <span class="tc2" id="pfMatched">0</span></button>
+          <button class="tog-b" data-v="notfound" onclick="setProxyFilter('notfound',this)">Not Found <span class="tc2" id="pfNotFound">0</span></button>
+          <button class="tog-b" data-v="noproxy" onclick="setProxyFilter('noproxy',this)">No Proxy <span class="tc2" id="pfNoProxy">0</span></button>
         </div>
       </div>
+      <div id="proxyList"></div>
     </div>
   </div>
 </div>
+
 <script>
-const S={rawRows:[],hotels:[],filtered:[],supplierLB:[],selectedSuppliers:new Set(),plan:[],covData:[],supIdx:new Map(),sortCol:'rank',sortAsc:true,activeTab:'hotels',covView:'gaps'};
-const W={demand:32,supplierDepth:23,concentration:20,backbone:15,recency:10};
-const WL={demand:'Demand',supplierDepth:'Supplier depth',concentration:'Concentration',backbone:'Backbone',recency:'Recency'};
-const WD={demand:'Booking volume (log-scaled)',supplierDepth:'Count of meaningful suppliers',concentration:'Top-supplier share sweet spot',backbone:'Meaningful supplier coverage',recency:'Days since last booking'};
-// Fixed scoring anchors — scores are absolute and stable across filter changes
-const A={dLow:Math.log1p(10),dHigh:Math.log1p(1000),depthMax:10,recencyMax:365,msfPct:0.03};
-const $=id=>document.getElementById(id);
-const REQ=['Hotel ID','Supplier Name','Supplier Bookings','Total Hotel Bookings','Last HotelxSupplier Booking','Last Hotel Booking','Supplier Room Nights','Total Hotel Room Nights'];
-const COLS=[{k:'rank',l:'#',s:1},{k:'hotelId',l:'Hotel ID',s:1},{k:'hotelName',l:'Hotel',s:1},{k:'country',l:'Country',s:1},{k:'city',l:'City',s:1},{k:'rating',l:'★',s:1},{k:'totalBookings',l:'Bookings',s:1},{k:'meaningfulSupplierCount',l:'M.Suppliers',s:1},{k:'topSupplierShare',l:'Top Share',s:1},{k:'top3Share',l:'Top3',s:1},{k:'hotelRecencyDays',l:'Recency',s:1},{k:'hotelScore',l:'Score',s:1},{k:'verdict',l:'Verdict',s:1},{k:'details',l:'',s:0}];
+// ─── STATE ───
+const S = {
+  baseRows: [], baseHotels: [], baseMap: new Map(),
+  userHotels: [],
+  directMatches: [], notFound: [],
+  proxyResults: [], // { userHotel, isDirectMatch, proxies: [...] }
+  activeTab: 'summary', proxyFilter: 'all'
+};
+
+// ─── V7 SCORING CONSTANTS (exact same as v7) ───
+const W = { demand: 32, supplierDepth: 23, concentration: 20, backbone: 15, recency: 10 };
+const WL = { demand: 'Demand', supplierDepth: 'Supplier depth', concentration: 'Concentration', backbone: 'Backbone', recency: 'Recency' };
+const WD = { demand: 'Booking volume (log-scaled)', supplierDepth: 'Count of meaningful suppliers', concentration: 'Top-supplier share sweet spot', backbone: 'Meaningful supplier coverage', recency: 'Days since last booking' };
+const A = { dLow: Math.log1p(10), dHigh: Math.log1p(1000), depthMax: 10, recencyMax: 365, msfPct: 0.03 };
+const $ = id => document.getElementById(id);
+
+const BASE_REQ = ['Hotel ID', 'Supplier Name', 'Supplier Bookings', 'Total Hotel Bookings', 'Last HotelxSupplier Booking', 'Last Hotel Booking', 'Supplier Room Nights', 'Total Hotel Room Nights'];
+const USER_REQ = ['Hotel ID'];
 
 // ─── UTILS ───
-function parseCSV(t){const R=[];let r=[],f='',q=false;for(let i=0;i<t.length;i++){const c=t[i],n=t[i+1];if(c==='"'){if(q&&n==='"'){f+='"';i++}else q=!q}else if(c===','&&!q){r.push(f);f=''}else if((c==='\n'||c==='\r')&&!q){if(c==='\r'&&n==='\n')i++;r.push(f);if(r.some(x=>x.trim()))R.push(r);r=[];f=''}else f+=c}if(f||r.length){r.push(f);if(r.some(x=>x.trim()))R.push(r)}if(!R.length)return[];const h=R[0].map(x=>x.trim());return R.slice(1).map(r=>{const o={};h.forEach((k,i)=>o[k]=(r[i]??'').toString().trim());return o})}
-function toN(v){const n=parseFloat(String(v).replace(/,/g,''));return Number.isFinite(n)?n:0}
-function pD(v){if(!v)return null;const d=new Date(v);return isNaN(d)?null:d}
-function dD(a,b){if(!a||!b)return null;return Math.round((a-b)/864e5)}
-function fD(d){return d?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`:'—'}
-function pct(x){return`${(x*100).toFixed(1)}%`}
-function safe(v){return(v==null||v==='')?'—':String(v)}
-function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
-function hL(r,ks){for(const k of ks)if(r[k]!==undefined)return r[k];return''}
-function tri(x,l,p,h){if(!Number.isFinite(x)||x<=l||x>=h)return 0;return x<=p?(x-l)/(p-l):(h-x)/(h-p)}
-function bell(x,peak,sigma){const z=(x-peak)/sigma;return Math.exp(-0.5*z*z)}
-function norm(vs){const ns=vs.filter(Number.isFinite);const mn=Math.min(...ns),mx=Math.max(...ns);return vs.map(v=>!Number.isFinite(v)?0:mx===mn?0.5:(v-mn)/(mx-mn))}
-function nW(){const t=W.demand+W.supplierDepth+W.concentration+W.backbone+W.recency||1;return{demand:W.demand/t,supplierDepth:W.supplierDepth/t,concentration:W.concentration/t,backbone:W.backbone/t,recency:W.recency/t}}
-function csvList(id){return($( id).value||'').split(',').map(x=>x.trim()).filter(Boolean)}
-function dlCSV(rows,name){const h=Object.keys(rows[0]||{});if(!h.length)return;const csv=[h.join(',')].concat(rows.map(r=>h.map(k=>{const s=String(r[k]??'').replace(/"/g,'""');return/[",\n]/.test(s)?`"${s}"`:s}).join(','))).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=name;a.click();URL.revokeObjectURL(a.href)}
+function parseCSV(t) {
+  const R = []; let r = [], f = '', q = false;
+  for (let i = 0; i < t.length; i++) {
+    const c = t[i], n = t[i + 1];
+    if (c === '"') { if (q && n === '"') { f += '"'; i++ } else q = !q }
+    else if (c === ',' && !q) { r.push(f); f = '' }
+    else if ((c === '\n' || c === '\r') && !q) { if (c === '\r' && n === '\n') i++; r.push(f); if (r.some(x => x.trim())) R.push(r); r = []; f = '' }
+    else f += c;
+  }
+  if (f || r.length) { r.push(f); if (r.some(x => x.trim())) R.push(r) }
+  if (!R.length) return [];
+  const h = R[0].map(x => x.trim());
+  return R.slice(1).map(r => { const o = {}; h.forEach((k, i) => o[k] = (r[i] ?? '').toString().trim()); return o });
+}
+function toN(v) { const n = parseFloat(String(v).replace(/,/g, '')); return Number.isFinite(n) ? n : 0 }
+function pD(v) { if (!v) return null; const d = new Date(v); return isNaN(d) ? null : d }
+function dD(a, b) { if (!a || !b) return null; return Math.round((a - b) / 864e5) }
+function pct(x) { return `${(x * 100).toFixed(1)}%` }
+function safe(v) { return (v == null || v === '') ? '—' : String(v) }
+function clamp(x, a, b) { return Math.max(a, Math.min(b, x)) }
+function hL(r, ks) { for (const k of ks) if (r[k] !== undefined && r[k] !== '') return r[k]; return '' }
+function nW() { const t = W.demand + W.supplierDepth + W.concentration + W.backbone + W.recency || 1; return { demand: W.demand / t, supplierDepth: W.supplierDepth / t, concentration: W.concentration / t, backbone: W.backbone / t, recency: W.recency / t } }
 
-// ─── HOTEL SCORING ───
-function computeHotels(rows){
-  const today=new Date(),hMap=new Map(),dq={dupes:0,missingDates:0,total:rows.length},seen=new Set();
-  rows.forEach(raw=>{
-    const hid=String(raw['Hotel ID']||'').trim();if(!hid)return;
-    const sn=raw['Supplier Name']||'Unknown';
-    const dk=`${hid}||${sn}`;if(seen.has(dk)){dq.dupes++;return}seen.add(dk);
-    const sb=toN(raw['Supplier Bookings']),thb=toN(raw['Total Hotel Bookings']),srn=toN(raw['Supplier Room Nights']),thrn=toN(raw['Total Hotel Room Nights']);
-    const lhsb=pD(raw['Last HotelxSupplier Booking']),lhb=pD(raw['Last Hotel Booking']);
-    if(!lhsb||!lhb)dq.missingDates++;
-    if(!hMap.has(hid))hMap.set(hid,{hotelId:hid,hotelName:hL(raw,['Hotel Name','HotelName']),country:hL(raw,['Country','CountryName']),state:hL(raw,['State','StateName']),city:hL(raw,['City','CityName']),rating:hL(raw,['Rating']),totalBookings:thb,totalRoomNights:thrn,lastHotelBooking:lhb,suppliers:[]});
-    hMap.get(hid).suppliers.push({supplierName:sn,supplierBookings:sb,totalHotelBookings:thb,lastHotelSupplierBooking:lhsb,lastHotelBooking:lhb,supplierRoomNights:srn,totalHotelRoomNights:thrn,supplierShare:thb?sb/thb:0,roomNightShare:thrn?srn/thrn:0});
+function dlCSV(rows, name) {
+  const h = Object.keys(rows[0] || {}); if (!h.length) return;
+  const csv = [h.join(',')].concat(rows.map(r => h.map(k => { const s = String(r[k] ?? '').replace(/"/g, '""'); return /[",\n]/.test(s) ? `"${s}"` : s }).join(','))).join('\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = name; a.click(); URL.revokeObjectURL(a.href);
+}
+
+// ─── HAVERSINE DISTANCE (km) ───
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+// ─── V7 HOTEL SCORING (identical logic) ───
+function computeHotels(rows) {
+  const today = new Date(), hMap = new Map(), dq = { dupes: 0, missingDates: 0, total: rows.length }, seen = new Set();
+  rows.forEach(raw => {
+    const hid = String(raw['Hotel ID'] || '').trim(); if (!hid) return;
+    const sn = raw['Supplier Name'] || 'Unknown';
+    const dk = `${hid}||${sn}`; if (seen.has(dk)) { dq.dupes++; return } seen.add(dk);
+    const sb = toN(raw['Supplier Bookings']), thb = toN(raw['Total Hotel Bookings']), srn = toN(raw['Supplier Room Nights']), thrn = toN(raw['Total Hotel Room Nights']);
+    const lhsb = pD(raw['Last HotelxSupplier Booking']), lhb = pD(raw['Last Hotel Booking']);
+    if (!lhsb || !lhb) dq.missingDates++;
+    if (!hMap.has(hid)) hMap.set(hid, {
+      hotelId: hid, hotelName: hL(raw, ['Hotel Name', 'HotelName']),
+      country: hL(raw, ['Country', 'CountryName']), state: hL(raw, ['State', 'StateName']),
+      city: hL(raw, ['City', 'CityName']), rating: hL(raw, ['Rating', 'Star Category', 'StarCategory']),
+      lat: toN(hL(raw, ['Latitude', 'Lat'])), lon: toN(hL(raw, ['Longitude', 'Lon', 'Long', 'Lng'])),
+      totalBookings: thb, totalRoomNights: thrn, lastHotelBooking: lhb, suppliers: []
+    });
+    hMap.get(hid).suppliers.push({ supplierName: sn, supplierBookings: sb, totalHotelBookings: thb, lastHotelSupplierBooking: lhsb, lastHotelBooking: lhb, supplierRoomNights: srn, totalHotelRoomNights: thrn, supplierShare: thb ? sb / thb : 0, roomNightShare: thrn ? srn / thrn : 0 });
   });
   showDQ(dq);
-  const hotels=[...hMap.values()].map(h=>{
-    h.suppliers.sort((a,b)=>b.supplierBookings-a.supplierBookings||b.supplierRoomNights-a.supplierRoomNights||(b.lastHotelSupplierBooking?.getTime()||0)-(a.lastHotelSupplierBooking?.getTime()||0));
-    h.suppliers=h.suppliers.map((s,i)=>({...s,supplierRank:i+1,recencyGapDays:dD(s.lastHotelBooking,s.lastHotelSupplierBooking)??999999,isMeaningful:s.supplierBookings>=Math.max(2,s.totalHotelBookings*A.msfPct)||s.supplierShare>=0.08}));
-    h.supplierCount=h.suppliers.length;
-    h.topSupplier=h.suppliers[0]?.supplierName||'';
-    h.topSupplierShare=h.suppliers[0]?.supplierShare||0;
-    h.top3Share=h.suppliers.slice(0,3).reduce((s,x)=>s+x.supplierShare,0);
-    h.meaningfulSuppliers=h.suppliers.filter(s=>s.isMeaningful);
-    h.meaningfulSupplierCount=h.meaningfulSuppliers.length;
-    h.meaningfulCoverage=h.meaningfulSuppliers.reduce((s,x)=>s+x.supplierShare,0);
-    h.hotelRecencyDays=dD(today,h.lastHotelBooking)??999999;
+  const hotels = [...hMap.values()].map(h => {
+    h.suppliers.sort((a, b) => b.supplierBookings - a.supplierBookings || b.supplierRoomNights - a.supplierRoomNights || (b.lastHotelSupplierBooking?.getTime() || 0) - (a.lastHotelSupplierBooking?.getTime() || 0));
+    h.suppliers = h.suppliers.map((s, i) => ({ ...s, supplierRank: i + 1, recencyGapDays: dD(s.lastHotelBooking, s.lastHotelSupplierBooking) ?? 999999, isMeaningful: s.supplierBookings >= Math.max(2, s.totalHotelBookings * A.msfPct) || s.supplierShare >= 0.08 }));
+    h.supplierCount = h.suppliers.length;
+    h.topSupplier = h.suppliers[0]?.supplierName || '';
+    h.topSupplierShare = h.suppliers[0]?.supplierShare || 0;
+    h.top3Share = h.suppliers.slice(0, 3).reduce((s, x) => s + x.supplierShare, 0);
+    h.meaningfulSuppliers = h.suppliers.filter(s => s.isMeaningful);
+    h.meaningfulSupplierCount = h.meaningfulSuppliers.length;
+    h.meaningfulCoverage = h.meaningfulSuppliers.reduce((s, x) => s + x.supplierShare, 0);
+    h.hotelRecencyDays = dD(today, h.lastHotelBooking) ?? 999999;
     return h;
   });
-  const w=nW();
-  const dN=hotels.map(h=>clamp((Math.log1p(h.totalBookings)-A.dLow)/(A.dHigh-A.dLow),0,1));
-  const _sortedCounts=[...hotels.map(h=>h.meaningfulSupplierCount)].sort((a,b)=>a-b);
-  const _p95idx=Math.floor(_sortedCounts.length*0.95);
-  const _depthMax=_sortedCounts[_p95idx]||10;
-  const dpN=hotels.map(h=>clamp(h.meaningfulSupplierCount/_depthMax,0,1));
-  const rN=hotels.map(h=>h.hotelRecencyDays===999999?0:clamp(1-h.hotelRecencyDays/A.recencyMax,0,1));
-  const cN=hotels.map(h=>{const hhi=h.suppliers.reduce((s,x)=>s+x.supplierShare*x.supplierShare,0);return clamp(1-(hhi-0.10)/0.55,0,1)});
-  const bN=hotels.map(h=>{const mS=h.meaningfulSuppliers;if(!mS.length)return 0;const sumSq=mS.reduce((s,x)=>s+x.supplierShare*x.supplierShare,0);const effCount=sumSq>0?(h.meaningfulCoverage*h.meaningfulCoverage)/sumSq:0;return clamp(effCount/4,0,1)});
-  const P={oc:toN(($('pOC')||{}).value??28),th:toN(($('pTH')||{}).value??14),fr:toN(($('pFR')||{}).value??18),wb:toN(($('pWB')||{}).value??12)};
-  hotels.forEach((h,i)=>{
-    const raw={demand:dN[i],supplierDepth:dpN[i],concentration:cN[i],backbone:bN[i],recency:rN[i]};
-    let score=(w.demand*raw.demand+w.supplierDepth*raw.supplierDepth+w.concentration*raw.concentration+w.backbone*raw.backbone+w.recency*raw.recency)*100;
-    const pen=[];
-    if(h.totalBookings<5){score=0;pen.push('disqualified: low vol')}
-    if(h.meaningfulSupplierCount<2){score=0;pen.push('disqualified: thin supply')}
-    if(score>0){
-      if(h.topSupplierShare>0.78&&P.oc){score*=(1-P.oc/100);pen.push(`concentrated ×${(1-P.oc/100).toFixed(2)}`)}
-      else if(h.topSupplierShare>0.60&&P.th){score*=(1-P.th/100);pen.push(`top-heavy ×${(1-P.th/100).toFixed(2)}`)}
-      if(h.top3Share<0.50&&P.fr){score*=(1-P.fr/100);pen.push(`fragmented ×${(1-P.fr/100).toFixed(2)}`)}
-      if(h.meaningfulCoverage<0.55&&P.wb){score*=(1-P.wb/100);pen.push(`weak backbone ×${(1-P.wb/100).toFixed(2)}`)}
+
+  const w = nW();
+  const dN = hotels.map(h => clamp((Math.log1p(h.totalBookings) - A.dLow) / (A.dHigh - A.dLow), 0, 1));
+  const _sortedCounts = [...hotels.map(h => h.meaningfulSupplierCount)].sort((a, b) => a - b);
+  const _p95idx = Math.floor(_sortedCounts.length * 0.95);
+  const _depthMax = _sortedCounts[_p95idx] || 10;
+  const dpN = hotels.map(h => clamp(h.meaningfulSupplierCount / _depthMax, 0, 1));
+  const rN = hotels.map(h => h.hotelRecencyDays === 999999 ? 0 : clamp(1 - h.hotelRecencyDays / A.recencyMax, 0, 1));
+  const cN = hotels.map(h => { const hhi = h.suppliers.reduce((s, x) => s + x.supplierShare * x.supplierShare, 0); return clamp(1 - (hhi - 0.10) / 0.55, 0, 1) });
+  const bN = hotels.map(h => { const mS = h.meaningfulSuppliers; if (!mS.length) return 0; const sumSq = mS.reduce((s, x) => s + x.supplierShare * x.supplierShare, 0); const effCount = sumSq > 0 ? (h.meaningfulCoverage * h.meaningfulCoverage) / sumSq : 0; return clamp(effCount / 4, 0, 1) });
+
+  const P = { oc: 28, th: 14, fr: 18, wb: 12 };
+  hotels.forEach((h, i) => {
+    const raw = { demand: dN[i], supplierDepth: dpN[i], concentration: cN[i], backbone: bN[i], recency: rN[i] };
+    let score = (w.demand * raw.demand + w.supplierDepth * raw.supplierDepth + w.concentration * raw.concentration + w.backbone * raw.backbone + w.recency * raw.recency) * 100;
+    const pen = [];
+    if (h.totalBookings < 5) { score = 0; pen.push('disqualified: low vol') }
+    if (h.meaningfulSupplierCount < 2) { score = 0; pen.push('disqualified: thin supply') }
+    if (score > 0) {
+      if (h.topSupplierShare > 0.78 && P.oc) { score *= (1 - P.oc / 100); pen.push(`concentrated ×${(1 - P.oc / 100).toFixed(2)}`) }
+      else if (h.topSupplierShare > 0.60 && P.th) { score *= (1 - P.th / 100); pen.push(`top-heavy ×${(1 - P.th / 100).toFixed(2)}`) }
+      if (h.top3Share < 0.50 && P.fr) { score *= (1 - P.fr / 100); pen.push(`fragmented ×${(1 - P.fr / 100).toFixed(2)}`) }
+      if (h.meaningfulCoverage < 0.55 && P.wb) { score *= (1 - P.wb / 100); pen.push(`weak backbone ×${(1 - P.wb / 100).toFixed(2)}`) }
     }
-    h.hotelScore=Math.max(0,score);
-    h.sb={raw,w:{demand:w.demand*raw.demand*100,supplierDepth:w.supplierDepth*raw.supplierDepth*100,concentration:w.concentration*raw.concentration*100,backbone:w.backbone*raw.backbone*100,recency:w.recency*raw.recency*100},pen};
-    h.verdict=verd(h);
+    h.hotelScore = Math.max(0, score);
+    h.sb = { raw, w: { demand: w.demand * raw.demand * 100, supplierDepth: w.supplierDepth * raw.supplierDepth * 100, concentration: w.concentration * raw.concentration * 100, backbone: w.backbone * raw.backbone * 100, recency: w.recency * raw.recency * 100 }, pen };
+    h.verdict = verd(h);
   });
+
+  // Sort by score for global ranking
+  hotels.sort((a, b) => b.hotelScore - a.hotelScore || b.totalBookings - a.totalBookings);
+  hotels.forEach((h, i) => h.globalRank = i + 1);
+
   return hotels;
 }
-function verd(h){
-  if(h.totalBookings<5||h.meaningfulSupplierCount<2)return'Disqualified';
-  if(h.topSupplierShare>0.78)return'Too Concentrated';
-  if(h.hotelScore>=65)return(h.topSupplierShare>0.60||h.top3Share>0.80)?'Good but Top-Heavy':'Good Volt Fit';
-  if(h.hotelScore>=40){if(h.top3Share<0.50)return'Too Fragmented';if(h.meaningfulCoverage<0.55)return'Weak Backbone';return'Usable'}
-  return'Poor Fit';
-}
-function vc(v){return v==='Good Volt Fit'?'good':(v==='Good but Top-Heavy'||v==='Usable')?'warn':'bad'}
 
-// ─── SUPPLIER LEADERBOARD ───
-function computeLB(hotels){
-  const m=new Map();
-  hotels.forEach(h=>h.suppliers.forEach(s=>{
-    if(!m.has(s.supplierName))m.set(s.supplierName,{name:s.supplierName,hotelCount:0,meaningfulCount:0,totalBookings:0,shares:[],priorityScore:0});
-    const a=m.get(s.supplierName);a.hotelCount++;a.totalBookings+=s.supplierBookings;a.shares.push(s.supplierShare);
-    a.priorityScore+=h.hotelScore*s.supplierShare;
-    if(s.isMeaningful)a.meaningfulCount++;
-  }));
-  return[...m.values()].map(s=>{s.avgShare=s.shares.length?s.shares.reduce((a,b)=>a+b,0)/s.shares.length:0;s.coveragePct=hotels.length?s.meaningfulCount/hotels.length:0;return s}).sort((a,b)=>b.meaningfulCount-a.meaningfulCount||b.totalBookings-a.totalBookings);
+function verd(h) {
+  if (h.totalBookings < 5 || h.meaningfulSupplierCount < 2) return 'Disqualified';
+  if (h.topSupplierShare > 0.78) return 'Too Concentrated';
+  if (h.hotelScore >= 65) return (h.topSupplierShare > 0.60 || h.top3Share > 0.80) ? 'Good but Top-Heavy' : 'Good Volt Fit';
+  if (h.hotelScore >= 40) { if (h.top3Share < 0.50) return 'Too Fragmented'; if (h.meaningfulCoverage < 0.55) return 'Weak Backbone'; return 'Usable' }
+  return 'Poor Fit';
 }
+function vc(v) { return v === 'Good Volt Fit' ? 'good' : (v === 'Good but Top-Heavy' || v === 'Usable') ? 'warn' : 'bad' }
 
-// ─── SUPPLIER→HOTEL INDEX (for fast optimizer) ───
-function buildSupplierIndex(hotels){
-  const idx=new Map(); // supplierName -> Set of hotel indices where meaningful
-  hotels.forEach((h,hi)=>h.suppliers.filter(s=>s.isMeaningful).forEach(s=>{
-    if(!idx.has(s.supplierName))idx.set(s.supplierName,new Set());
-    idx.get(s.supplierName).add(hi);
-  }));
-  return idx;
+// ─── DQ BANNER ───
+function showDQ(dq) {
+  const items = [`<span class="dq-tag ok">${dq.total} rows</span>`];
+  if (dq.dupes) items.push(`<span class="dq-tag w">${dq.dupes} dupes merged</span>`);
+  if (dq.missingDates) items.push(`<span class="dq-tag w">${dq.missingDates} missing dates</span>`);
+  if (!dq.dupes && !dq.missingDates) items.push(`<span class="dq-tag ok">Clean</span>`);
+  $('dqBanner').innerHTML = `<strong style="margin-right:12px">Base Data Quality</strong>${items.join(' ')}`;
+  $('dqBanner').classList.add('visible');
 }
 
-// ─── OPTIMIZER (performance-first) ───
-function optimize(){
-  if(!S.filtered.length){alert('Run hotel ranking first.');return}
-  const hotels=S.filtered;
-  const maxSup=Math.max(1,toN($('maxSup').value)||8);
-  const cutoff=toN($('marginalCutoff').value)||0.5;
-  const exclude=new Set(csvList('excludeSup').map(s=>s.toLowerCase()));
-  const force=csvList('forceSup');
-  const idx=S.supIdx;
-  const N=hotels.length;
+// ─── PARSE USER CSV ───
+function parseUserCSV(rows) {
+  return rows.map(r => ({
+    hotelId: String(r['Hotel ID'] || '').trim(),
+    hotelName: hL(r, ['Hotel Name', 'HotelName', 'Name']) || '',
+    starCategory: toN(hL(r, ['Star Category', 'StarCategory', 'Stars', 'Rating'])),
+    lat: toN(hL(r, ['Latitude', 'Lat'])),
+    lon: toN(hL(r, ['Longitude', 'Lon', 'Long', 'Lng']))
+  })).filter(h => h.hotelId);
+}
 
-  // Track which hotels are covered (by index)
-  const covered=new Set();
-  const selected=[];
-  const steps=[];
+// ─── SPATIAL INDEX (simple grid for fast radius search) ───
+function buildSpatialIndex(hotels, cellSizeKm) {
+  const cellDeg = cellSizeKm / 111.32; // approximate degrees per km
+  const grid = new Map();
+  hotels.forEach((h, idx) => {
+    if (!h.lat && !h.lon) return;
+    const cx = Math.floor(h.lat / cellDeg);
+    const cy = Math.floor(h.lon / cellDeg);
+    const key = `${cx},${cy}`;
+    if (!grid.has(key)) grid.set(key, []);
+    grid.get(key).push(idx);
+  });
+  return { grid, cellDeg };
+}
 
-  function metrics(){
-    let bkCov=0,shareSum=0,covCount=covered.size;
-    covered.forEach(hi=>{
-      const h=hotels[hi];
-      const match=h.suppliers.filter(s=>selected.includes(s.supplierName));
-      const share=Math.min(1,match.reduce((sum,s)=>sum+s.supplierShare,0));
-      shareSum+=share;bkCov+=h.totalBookings*share;
+function findNearby(spatial, hotels, lat, lon, radiusKm) {
+  const { grid, cellDeg } = spatial;
+  const cx = Math.floor(lat / cellDeg);
+  const cy = Math.floor(lon / cellDeg);
+  const results = [];
+  // Check surrounding cells (radius + 1 cell buffer)
+  const cellRadius = Math.ceil(radiusKm / (cellDeg * 111.32)) + 1;
+  for (let dx = -cellRadius; dx <= cellRadius; dx++) {
+    for (let dy = -cellRadius; dy <= cellRadius; dy++) {
+      const key = `${cx + dx},${cy + dy}`;
+      const indices = grid.get(key);
+      if (!indices) continue;
+      for (const idx of indices) {
+        const h = hotels[idx];
+        const dist = haversine(lat, lon, h.lat, h.lon);
+        if (dist <= radiusKm) results.push({ hotel: h, distance: dist, idx });
+      }
+    }
+  }
+  return results;
+}
+
+// ─── PROXY FITNESS SCORE ───
+function proxyFitness(hotel, distance, radiusKm, wScore, wDist, maxScore) {
+  // Normalize hotel score to 0-1 (relative to best in base)
+  const scoreNorm = maxScore > 0 ? hotel.hotelScore / maxScore : 0;
+  // Normalize distance to 0-1 (closer = higher)
+  const distNorm = 1 - clamp(distance / radiusKm, 0, 1);
+  const total = wScore + wDist || 1;
+  return ((wScore / total) * scoreNorm + (wDist / total) * distNorm) * 100;
+}
+
+// ─── MAIN ANALYSIS ───
+function runAnalysis() {
+  const radiusKm = toN($('qRadius').value) || 1;
+  const starTol = toN($('qStarTol').value);
+  const maxProxy = toN($('qMaxProxy').value) || 5;
+  const wScore = toN($('qWScore').value) || 70;
+  const wDist = toN($('qWDist').value) || 30;
+
+  const baseHotels = S.baseHotels;
+  const userHotels = S.userHotels;
+  const baseMap = S.baseMap;
+  const maxBaseScore = baseHotels.length ? baseHotels[0].hotelScore : 1; // already sorted by score
+
+  // Build spatial index
+  const spatial = buildSpatialIndex(baseHotels, Math.max(radiusKm, 2));
+
+  const directMatches = [];
+  const notFound = [];
+  const proxyResults = [];
+
+  userHotels.forEach(uh => {
+    const baseHotel = baseMap.get(uh.hotelId);
+    const isDirectMatch = !!baseHotel;
+
+    if (isDirectMatch) {
+      directMatches.push(baseHotel);
+    } else {
+      notFound.push(uh);
+    }
+
+    // Find proxy candidates
+    const candidates = findNearby(spatial, baseHotels, uh.lat, uh.lon, radiusKm);
+
+    // Filter by star category
+    const starMin = uh.starCategory;
+    const starMax = uh.starCategory + starTol;
+    const filtered = candidates.filter(c => {
+      const cStar = toN(c.hotel.rating);
+      if (!cStar || !starMin) return true; // if star data missing, include
+      return cStar >= starMin && cStar <= starMax;
+    }).filter(c => c.hotel.hotelId !== uh.hotelId); // exclude self
+
+    // Compute fitness and sort
+    const ranked = filtered.map(c => ({
+      ...c,
+      fitness: proxyFitness(c.hotel, c.distance, radiusKm, wScore, wDist, maxBaseScore),
+      isStrongProxy: c.hotel.totalBookings >= 5 && c.hotel.meaningfulSupplierCount >= 2
+    })).sort((a, b) => b.fitness - a.fitness).slice(0, maxProxy);
+
+    proxyResults.push({
+      userHotel: uh,
+      isDirectMatch,
+      baseHotel: baseHotel || null,
+      proxies: ranked
     });
-    const totalBk=hotels.reduce((s,h)=>s+h.totalBookings,0);
-    return{hotelPct:covCount/N,bookPct:totalBk?bkCov/totalBk:0,avgShare:covCount?shareSum/covCount:0,covCount,totalBk,bkCov};
-  }
-
-  function addSupplier(name){
-    selected.push(name);
-    const hotelSet=idx.get(name)||new Set();
-    const newlyUnlocked=[];
-    hotelSet.forEach(hi=>{if(!covered.has(hi)){covered.add(hi);newlyUnlocked.push(hi)}});
-    return newlyUnlocked;
-  }
-
-  // Force includes
-  force.forEach(name=>{
-    if(selected.length>=maxSup)return;
-    if(!idx.has(name)){return}
-    const unlocked=addSupplier(name);
-    const m=metrics();
-    steps.push({order:steps.length+1,supplier:name,reason:'Forced',marginal:true,marginalHotels:unlocked.length,marginalHotelPct:unlocked.length/N*100,unlockedHotels:unlocked.map(i=>hotels[i].hotelName).slice(0,10),...m});
   });
 
-  // Greedy loop
-  while(selected.length<maxSup){
-    let bestName=null,bestNewCount=-1,bestBkGain=-1;
-    for(const[name,hotelSet] of idx){
-      if(selected.includes(name))continue;
-      if(exclude.has(name.toLowerCase()))continue;
-      let newCount=0,bkGain=0;
-      hotelSet.forEach(hi=>{if(!covered.has(hi)){newCount++;bkGain+=hotels[hi].totalBookings}});
-      if(newCount>bestNewCount||(newCount===bestNewCount&&bkGain>bestBkGain)){bestName=name;bestNewCount=newCount;bestBkGain=bkGain}
-    }
-    if(!bestName||bestNewCount===0)break;
-    const isMarginal=(bestNewCount/N*100)<cutoff;
-    const unlocked=addSupplier(bestName);
-    const m=metrics();
-    steps.push({order:steps.length+1,supplier:bestName,reason:isMarginal?'Marginal gain':'Adds coverage',marginal:isMarginal,marginalHotels:bestNewCount,marginalHotelPct:bestNewCount/N*100,unlockedHotels:unlocked.map(i=>hotels[i].hotelName).slice(0,10),...m});
-  }
+  S.directMatches = directMatches;
+  S.notFound = notFound;
+  S.proxyResults = proxyResults;
 
-  S.plan=steps;
-  renderPlan(steps);
-  // Also sync to simulator
-  S.selectedSuppliers=new Set(steps.filter(s=>!s.marginal).map(s=>s.supplier));
-  renderPicker();updateCov();
-  $('exportPlan').disabled=!steps.length;
+  renderAll(radiusKm, starTol);
 }
 
-function renderPlan(steps){
-  if(!steps.length){$('planChips').innerHTML='';$('planWrap').innerHTML='<div class="empty"><p>Click "Optimize".</p></div>';['o1','o2','o3','o4'].forEach(id=>{$(id).textContent='—';$(id+'s')&&($(id+'s').textContent='')});return}
-  const last=steps[steps.length-1];
-  $('o1').textContent=steps.length;$('o1s').textContent=steps.map(s=>s.supplier).join(', ');
-  $('o2').textContent=`${(last.hotelPct*100).toFixed(1)}%`;$('o2').className='opt-v '+(last.hotelPct>=0.7?'good':last.hotelPct>=0.4?'warn':'bad');$('o2s').textContent=`${last.covCount}/${S.filtered.length}`;
-  $('o3').textContent=`${(last.bookPct*100).toFixed(1)}%`;$('o3').className='opt-v '+(last.bookPct>=0.6?'good':last.bookPct>=0.3?'warn':'bad');$('o3s').textContent=`${Math.round(last.bkCov).toLocaleString()} of ${last.totalBk.toLocaleString()}`;
-  $('o4').textContent=`${(last.avgShare*100).toFixed(1)}%`;$('o4').className='opt-v '+(last.avgShare>=0.3?'good':last.avgShare>=0.15?'warn':'bad');
+// ─── RENDER ALL ───
+function renderAll(radius, starTol) {
+  const dm = S.directMatches, nf = S.notFound, pr = S.proxyResults;
+  const totalUser = S.userHotels.length;
+  const withProxy = pr.filter(p => p.proxies.length > 0).length;
+  const noProxy = pr.filter(p => p.proxies.length === 0).length;
+  const avgFitness = pr.reduce((s, p) => s + (p.proxies[0]?.fitness || 0), 0) / (totalUser || 1);
 
-  $('planChips').innerHTML=steps.map(s=>`<div class="plan-chip ${s.marginal?'marginal':''}"><span class="po">${s.order}</span><span>${s.supplier}</span></div>`).join('');
+  // Tab counts
+  $('tcDirect').textContent = dm.length;
+  $('tcNotFound').textContent = nf.length;
+  $('tcProxy').textContent = totalUser;
 
-  $('planWrap').innerHTML=`<table><thead><tr><th>#</th><th>Supplier</th><th>Why</th><th>+Hotels</th><th>+Hotel%</th><th>Hotel cov after</th><th>Booking cov after</th><th>Avg share after</th><th>Hotels unlocked (sample)</th></tr></thead>
-    <tbody>${steps.map(s=>`<tr style="${s.marginal?'opacity:0.5;':''}">
-      <td style="font-family:var(--mono)">${s.order}</td>
-      <td style="font-weight:600">${s.supplier}</td>
-      <td>${s.marginal?'<span class="badge warn">'+s.reason+'</span>':'<span class="badge good">'+s.reason+'</span>'}</td>
-      <td style="font-family:var(--mono)">${s.marginalHotels}</td>
-      <td style="font-family:var(--mono)">${s.marginalHotelPct.toFixed(1)}%</td>
-      <td style="font-family:var(--mono)">${(s.hotelPct*100).toFixed(1)}%</td>
-      <td style="font-family:var(--mono)">${(s.bookPct*100).toFixed(1)}%</td>
-      <td style="font-family:var(--mono)">${(s.avgShare*100).toFixed(1)}%</td>
-      <td style="max-width:280px;white-space:normal;font-size:11px;color:var(--text-muted)">${s.unlockedHotels.join(', ')}${s.marginalHotels>10?' …':''}</td>
-    </tr>`).join('')}</tbody></table>`;
+  // Summary stats
+  $('summaryStats').innerHTML = `
+    <div class="st-card"><div class="st-label">Hotels Uploaded</div><div class="st-val">${totalUser}</div></div>
+    <div class="st-card"><div class="st-label">Direct Matches</div><div class="st-val" style="color:var(--good)">${dm.length}</div><div class="st-sub">${totalUser ? (dm.length / totalUser * 100).toFixed(0) : 0}% hit rate</div></div>
+    <div class="st-card"><div class="st-label">Not Found</div><div class="st-val" style="color:${nf.length ? 'var(--bad)' : 'var(--good)'}">${nf.length}</div></div>
+    <div class="st-card"><div class="st-label">With Proxy Available</div><div class="st-val" style="color:var(--accent)">${withProxy}</div><div class="st-sub">${totalUser ? (withProxy / totalUser * 100).toFixed(0) : 0}% coverage</div></div>
+    <div class="st-card"><div class="st-label">No Proxy Found</div><div class="st-val" style="color:${noProxy ? 'var(--warn)' : 'var(--good)'}">${noProxy}</div></div>
+    <div class="st-card"><div class="st-label">Base Universe</div><div class="st-val">${S.baseHotels.length.toLocaleString()}</div><div class="st-sub">scored hotels</div></div>
+  `;
+
+  // Match overview
+  const matchRate = totalUser ? (dm.length / totalUser * 100) : 0;
+  const matchCls = matchRate >= 70 ? 'good' : matchRate >= 40 ? 'warn' : 'bad';
+  const avgDirectScore = dm.length ? (dm.reduce((s, h) => s + h.hotelScore, 0) / dm.length).toFixed(1) : '—';
+  const goodFitCount = dm.filter(h => h.verdict === 'Good Volt Fit').length;
+  $('matchOverview').innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;">
+      <div style="text-align:center;"><div style="font-size:28px;font-weight:800;font-family:var(--mono);color:var(--${matchCls})">${matchRate.toFixed(0)}%</div><div style="font-size:11px;color:var(--text-dim);">Match Rate</div></div>
+      <div style="text-align:center;"><div style="font-size:28px;font-weight:800;font-family:var(--mono);">${avgDirectScore}</div><div style="font-size:11px;color:var(--text-dim);">Avg Score</div></div>
+      <div style="text-align:center;"><div style="font-size:28px;font-weight:800;font-family:var(--mono);color:var(--good)">${goodFitCount}</div><div style="font-size:11px;color:var(--text-dim);">Good Volt Fit</div></div>
+    </div>
+    <div style="font-size:12px;color:var(--text-muted);">${dm.length} of ${totalUser} uploaded hotels were found in your base data with full supplier scoring available.</div>
+  `;
+
+  // Proxy coverage
+  const proxyCls = withProxy / totalUser >= 0.7 ? 'good' : withProxy / totalUser >= 0.4 ? 'warn' : 'bad';
+  const avgTopDist = pr.filter(p => p.proxies.length).reduce((s, p) => s + p.proxies[0].distance, 0) / (withProxy || 1);
+  $('proxyCoverage').innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;">
+      <div style="text-align:center;"><div style="font-size:28px;font-weight:800;font-family:var(--mono);color:var(--${proxyCls})">${(withProxy / (totalUser || 1) * 100).toFixed(0)}%</div><div style="font-size:11px;color:var(--text-dim);">Have Proxies</div></div>
+      <div style="text-align:center;"><div style="font-size:28px;font-weight:800;font-family:var(--mono);">${avgFitness.toFixed(1)}</div><div style="font-size:11px;color:var(--text-dim);">Avg Top Fitness</div></div>
+      <div style="text-align:center;"><div style="font-size:28px;font-weight:800;font-family:var(--mono);">${avgTopDist.toFixed(2)}</div><div style="font-size:11px;color:var(--text-dim);">Avg Top Dist (km)</div></div>
+    </div>
+    <div style="font-size:12px;color:var(--text-muted);">Searched within ${radius} km, star tolerance +${starTol}. ${noProxy} hotels had no proxy candidates.</div>
+  `;
+
+  renderDirectTable();
+  renderNotFoundTable();
+  renderProxyFilterCounts();
+  renderProxyList();
+
+  $('exportDirect').disabled = !dm.length;
+  $('exportProxy').disabled = !pr.length;
 }
 
-// ─── MAIN RUN ───
-function run(){
-  const topN=Math.max(1,toN($('topN').value)||100),minB=toN($('minBookings').value),minS=Math.max(1,toN($('minSuppliers').value));
-  const search=$('searchInput').value.toLowerCase().trim();
-  const co=$('countryF').value,st=$('stateF').value,ci=$('cityF').value,ra=$('ratingF').value,ve=$('verdictF').value;
-  const minSc=toN($('minScore').value),maxSc=toN($('maxScore').value)||100;
-  const maxTS=(toN($('maxTopShare').value)||100)/100;
-  const mrV=$('maxRecency').value.trim(),maxR=mrV?toN(mrV):Infinity;
-  const msC=[...MS.country],msSt=[...MS.state],msCi=[...MS.city],msH=[...MS.hotel];
+// ─── DIRECT MATCHES TABLE ───
+function renderDirectTable() {
+  const hotels = S.directMatches;
+  if (!hotels.length) { $('directTable').innerHTML = '<div class="empty"><div class="icon">📊</div><p>No direct matches found.</p></div>'; $('directStats').innerHTML = ''; return }
 
-  let f=S.hotels
-    .filter(h=>!co||h.country===co)
-    .filter(h=>!st||h.state===st)
-    .filter(h=>!ci||h.city===ci)
-    .filter(h=>!msC.length||msC.includes(h.country))
-    .filter(h=>!msSt.length||msSt.includes(h.state))
-    .filter(h=>!msCi.length||msCi.includes(h.city))
-    .filter(h=>!msH.length||msH.includes(h.hotelId)||msH.some(n=>h.hotelName&&h.hotelName.toLowerCase()===n.toLowerCase()))
-    .filter(h=>!ra||String(h.rating)===String(ra))
-    .filter(h=>h.totalBookings>=minB)
-    .filter(h=>h.meaningfulSupplierCount>=minS)
-    .filter(h=>!search||h.hotelName.toLowerCase().includes(search)||h.hotelId.toLowerCase().includes(search))
-    .filter(h=>!ve||h.verdict===ve)
-    .filter(h=>h.hotelScore>=minSc&&h.hotelScore<=maxSc)
-    .filter(h=>h.topSupplierShare<=maxTS)
-    .filter(h=>h.hotelRecencyDays<=maxR)
-    .sort((a,b)=>b.hotelScore-a.hotelScore||b.totalBookings-a.totalBookings)
-    .slice(0,topN)
-    .map((h,i)=>({...h,rank:i+1}));
+  const avg = hotels.reduce((s, h) => s + h.hotelScore, 0) / hotels.length;
+  const gf = hotels.filter(h => h.verdict === 'Good Volt Fit').length;
+  $('directStats').innerHTML = `
+    <div class="st-card"><div class="st-label">Direct Matches</div><div class="st-val">${hotels.length}</div></div>
+    <div class="st-card"><div class="st-label">Avg Score</div><div class="st-val">${avg.toFixed(1)}</div></div>
+    <div class="st-card"><div class="st-label">Good Volt Fit</div><div class="st-val" style="color:var(--good)">${gf}</div><div class="st-sub">${(gf / hotels.length * 100).toFixed(0)}%</div></div>
+    <div class="st-card"><div class="st-label">Avg Meaningful Suppliers</div><div class="st-val">${(hotels.reduce((s, h) => s + h.meaningfulSupplierCount, 0) / hotels.length).toFixed(1)}</div></div>
+  `;
 
-  S.filtered=f;S.supplierLB=computeLB(f);S.supIdx=buildSupplierIndex(f);S.plan=[];
-  renderHotelTable(f);renderLB(S.supplierLB);renderPicker();renderPlan([]);updateCov();updateStats(f);if(f.length)renderRankProof(1);else $('rankProof').classList.add('hidden');
-  $('tc1').textContent=f.length;$('tc2').textContent=S.supplierLB.length;$('exportHotels').disabled=!f.length;$('exportPlan').disabled=true;
-}
+  let html = `<table><thead><tr>
+    <th>#</th><th>Hotel ID</th><th>Hotel</th><th>Country</th><th>City</th><th>★</th>
+    <th>Bookings</th><th>M.Suppliers</th><th>Top Share</th><th>Top3</th><th>Recency</th>
+    <th>Score</th><th>Verdict</th><th>Rank (Base)</th><th></th>
+  </tr></thead><tbody>`;
 
-// ─── HOTEL TABLE ───
-function renderHHead(){$('hHead').innerHTML=COLS.map(c=>{const s=S.sortCol===c.k,a=s?(S.sortAsc?'↑':'↓'):'';return`<th class="${s?'sorted':''} ${c.s?'sortable':''}" ${c.s?`onclick="hSort('${c.k}')"`:''}>${c.l}${a?`<span style="font-size:10px;margin-left:2px">${a}</span>`:''}</th>`}).join('')}
-window.hSort=function(col){if(S.sortCol===col)S.sortAsc=!S.sortAsc;else{S.sortCol=col;S.sortAsc=col==='rank'}renderHHead();renderHRows([...S.filtered].sort((a,b)=>{let va=a[col],vb=b[col];if(typeof va==='string')return S.sortAsc?String(va).localeCompare(String(vb)):String(vb).localeCompare(String(va));va=va??0;vb=vb??0;return S.sortAsc?va-vb:vb-va}))};
-function renderHotelTable(h){renderHHead();renderHRows(h)}
-
-function scoreParts(h){
-  const parts=h.sb?.w||{};
-  return [
-    ['Demand',parts.demand||0],
-    ['Supplier depth',parts.supplierDepth||0],
-    ['Concentration',parts.concentration||0],
-    ['Backbone',parts.backbone||0],
-    ['Recency',parts.recency||0],
-  ];
-}
-function deltaClass(metric,a,b){
-  const higherBetter=!['topSupplierShare','hotelRecencyDays'].includes(metric);
-  if(a===b)return 'delta-neutral';
-  const better=higherBetter ? a>b : a<b;
-  return better?'delta-good':'delta-bad';
-}
-function formatMetric(metric,val){
-  if(metric==='topSupplierShare'||metric==='top3Share')return pct(val);
-  if(metric==='hotelRecencyDays')return val===999999?'—':val+'d';
-  if(metric==='hotelScore')return val.toFixed(1);
-  return String(val);
-}
-function renderRankProof(rank){
-  const box=$('rankProof');
-  const h=S.filtered.find(x=>x.rank===rank) || S.filtered[0];
-  if(!h){box.classList.add('hidden');box.innerHTML='';return}
-  const prev=S.filtered.find(x=>x.rank===h.rank-1) || null;
-  const next=S.filtered.find(x=>x.rank===h.rank+1) || null;
-  const strongest=scoreParts(h).sort((a,b)=>b[1]-a[1]).slice(0,3);
-  const metrics=['totalBookings','meaningfulSupplierCount','topSupplierShare','top3Share','hotelRecencyDays','hotelScore'];
-  function compCard(other,label){
-    if(!other)return `<div class="rp-card"><div class="rp-name">No ${label} hotel</div><div class="rp-rank">Nothing to compare</div></div>`;
-    return `<div class="rp-card">
-      <div class="rp-name">vs #${other.rank} ${safe(other.hotelName)||other.hotelId}</div>
-      <div class="rp-rank">${label} comparison</div>
-      <table class="rp-table"><thead><tr><th>Metric</th><th>#${h.rank}</th><th>#${other.rank}</th><th>Edge</th></tr></thead><tbody>
-        ${metrics.map(m=>{
-          const lbl={totalBookings:'Bookings',meaningfulSupplierCount:'M. Suppliers',topSupplierShare:'Top Share',top3Share:'Top 3',hotelRecencyDays:'Recency',hotelScore:'Score'}[m];
-          const cls=deltaClass(m,h[m],other[m]);
-          let edge='Tie';
-          if(cls==='delta-good')edge='#'+h.rank;
-          else if(cls==='delta-bad')edge='#'+other.rank;
-          return `<tr><td>${lbl}</td><td>${formatMetric(m,h[m])}</td><td>${formatMetric(m,other[m])}</td><td class="${cls}">${edge}</td></tr>`;
-        }).join('')}
-      </tbody></table>
-    </div>`;
-  }
-  box.innerHTML=`<div class="rp-head"><div><div class="rp-title">Why is #${h.rank} ${safe(h.hotelName)||h.hotelId} ranked here?</div><div class="rp-sub">Frontend explanation only — same scoring logic, shown in a pitch-friendly numeric format.</div></div><button class="btn btn-g btn-sm" onclick="document.getElementById('rankProof').classList.add('hidden')">Hide</button></div>
-    <div class="rp-grid">
-      <div class="rp-card main">
-        <div class="rp-name">#${h.rank} ${safe(h.hotelName)||h.hotelId}</div>
-        <div class="rp-rank">Hotel ID ${h.hotelId}</div>
-        <div class="rp-points">
-          <div class="rp-pt"><div class="k">Score</div><div class="v">${h.hotelScore.toFixed(1)}</div></div>
-          <div class="rp-pt"><div class="k">Bookings</div><div class="v">${h.totalBookings}</div></div>
-          <div class="rp-pt"><div class="k">M. Suppliers</div><div class="v">${h.meaningfulSupplierCount}</div></div>
-        </div>
-        <ul class="rp-list">
-          <li>Top Share: <strong>${pct(h.topSupplierShare)}</strong></li>
-          <li>Top 3 Share: <strong>${pct(h.top3Share)}</strong></li>
-          <li>Recency: <strong>${formatMetric('hotelRecencyDays',h.hotelRecencyDays)}</strong></li>
-          <li>Strongest score contributors: ${strongest.map(([k,v])=>`${k} ${v.toFixed(1)}`).join(' · ')}</li>
-        </ul>
-      </div>
-      ${compCard(prev,'previous')}
-      ${compCard(next,'next')}
-    </div>`;
-  box.classList.remove('hidden');
-  if($('compareA') && $('compareB')){
-    $('compareA').value = String(h.rank);
-    const fallback = prev ? prev.rank : (next ? next.rank : h.rank);
-    $('compareB').value = String(fallback);
-    renderHotelCompare($('compareA').value, $('compareB').value);
-  }
-}
-window.showRankProof=renderRankProof;
-
-function renderHRows(hotels){
-  const body=$('hBody');if(!hotels.length){$('rankProof').classList.add('hidden');body.innerHTML='<tr><td colspan="14" class="empty"><div class="icon">📊</div><p>No hotels match.</p></td></tr>';return}
-  const CK=200;body.innerHTML='';
-  function chunk(s){const e=Math.min(s+CK,hotels.length);let html='';for(let i=s;i<e;i++){const h=hotels[i],bd=h.sb;
-    const tip=`<div class="score-tip">${Object.keys(WL).map(k=>`<div class="st-r"><span class="l">${WL[k]}</span><span class="v">${bd.w[k].toFixed(1)}</span></div><div class="st-b"><div class="st-bf" style="width:${Math.min(100,bd.raw[k]*100)}%"></div></div>`).join('')}${bd.pen.length?`<div class="st-d"></div>${bd.pen.map(p=>`<div class="st-r"><span class="l" style="color:#f87171">⊖ ${p}</span></div>`).join('')}`:''}
+  hotels.forEach((h, i) => {
+    const bd = h.sb;
+    const tip = `<div class="score-tip">${Object.keys(WL).map(k => `<div class="st-r"><span class="l">${WL[k]}</span><span class="v">${bd.w[k].toFixed(1)}</span></div><div class="st-b"><div class="st-bf" style="width:${Math.min(100, bd.raw[k] * 100)}%"></div></div>`).join('')}${bd.pen.length ? `<div class="st-d"></div>${bd.pen.map(p => `<div class="st-r"><span class="l" style="color:#f87171">⊖ ${p}</span></div>`).join('')}` : ''}
       <div class="st-d"></div><div class="st-r"><span class="l" style="font-weight:700">Total</span><span class="v">${h.hotelScore.toFixed(1)}</span></div></div>`;
-    const sRows=h.suppliers.map(s=>`<tr><td>${s.supplierName}</td><td>${s.supplierRank}</td><td>${s.supplierBookings}</td><td>${pct(s.supplierShare)}</td><td>${pct(s.roomNightShare)}</td><td>${s.isMeaningful?'<span class="badge good">Y</span>':'<span class="badge neutral">N</span>'}</td><td>${s.recencyGapDays===999999?'—':s.recencyGapDays+'d'}</td></tr>`).join('');
-    html+=`<tr><td style="font-family:var(--mono);font-weight:600;color:var(--text-dim)">${h.rank}</td><td style="font-family:var(--mono);font-size:11px">${h.hotelId}</td><td class="hotel-name-cell" title="${safe(h.hotelName)}"><span class="hotel-name-main">${safe(h.hotelName)}</span><button class="why-btn" onclick="showRankProof(${h.rank})">Why?</button></td><td>${safe(h.country)}</td><td>${safe(h.city)}</td><td>${safe(h.rating)}</td><td style="font-family:var(--mono)">${h.totalBookings}</td><td>${h.meaningfulSupplierCount} <span style="color:var(--text-dim)">(${h.supplierCount})</span></td><td style="font-family:var(--mono)">${pct(h.topSupplierShare)}</td><td style="font-family:var(--mono)">${pct(h.top3Share)}</td><td style="font-family:var(--mono)">${h.hotelRecencyDays===999999?'—':h.hotelRecencyDays+'d'}</td><td class="score-cell"><span class="badge info">${h.hotelScore.toFixed(1)}</span>${tip}</td><td><span class="badge ${vc(h.verdict)}">${h.verdict}</span></td><td><details><summary>▸</summary><div class="sup-box"><table><thead><tr><th>Supplier</th><th>Rank</th><th>Bk</th><th>Share</th><th>RN</th><th>M.</th><th>Gap</th></tr></thead><tbody>${sRows}</tbody></table></div></details></td></tr>`}
-  body.insertAdjacentHTML('beforeend',html);if(e<hotels.length)requestAnimationFrame(()=>chunk(e))}chunk(0)}
-
-// ─── LEADERBOARD ───
-function renderLB(lb){if(!lb.length){$('lbWrap').innerHTML='<div class="empty"><p>No data.</p></div>';return}const mx=lb[0]?.meaningfulCount||1;
-  $('lbWrap').innerHTML=`<table><thead><tr><th>#</th><th>Supplier</th><th>Hotels</th><th>Meaningful</th><th>Coverage</th><th>Bookings</th><th>Avg Share</th><th>Priority</th></tr></thead><tbody>${lb.map((s,i)=>{const bw=Math.round(s.meaningfulCount/mx*100);return`<tr><td style="font-family:var(--mono);color:var(--text-dim)">${i+1}</td><td style="font-weight:600">${s.name}</td><td style="font-family:var(--mono)">${s.hotelCount}</td><td style="font-family:var(--mono)">${s.meaningfulCount} <span class="lb-bar"><span class="lb-fill${s.coveragePct>=0.5?' hi':''}" style="width:${bw}%"></span></span></td><td><span class="badge ${s.coveragePct>=0.5?'good':s.coveragePct>=0.2?'warn':'neutral'}">${pct(s.coveragePct)}</span></td><td style="font-family:var(--mono)">${s.totalBookings.toLocaleString()}</td><td style="font-family:var(--mono)">${pct(s.avgShare)}</td><td style="font-family:var(--mono)">${s.priorityScore.toFixed(1)}</td></tr>`}).join('')}</tbody></table>`}
-
-// ─── COVERAGE SIMULATOR ───
-function renderPicker(){
-  const search=$('supSearch').value.toLowerCase().trim();
-  const list=S.supplierLB.filter(s=>!search||s.name.toLowerCase().includes(search));
-  $('supPicker').innerHTML=list.map(s=>{const sel=S.selectedSuppliers.has(s.name);return`<div class="sp-chip ${sel?'sel':''}" data-s="${s.name}" onclick="togSup(this)"><span class="ck">${sel?'✓':''}</span><span>${s.name}</span><span class="ct">${s.meaningfulCount}</span></div>`}).join('')}
-window.togSup=function(el){const n=el.dataset.s;if(S.selectedSuppliers.has(n))S.selectedSuppliers.delete(n);else S.selectedSuppliers.add(n);renderPicker();updateCov()};
-window.setCovView=function(v,btn){S.covView=v;document.querySelectorAll('.tog-b').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderCovTable()};
-
-function getCov(sel){
-  const hotels=S.filtered;let bkAll=0,bkCov=0,shSum=0;
-  const data=hotels.map(h=>{bkAll+=h.totalBookings;const m=h.suppliers.filter(s=>sel.has(s.supplierName));const c=m.length>0;const ts=c?Math.min(1,m.reduce((s,x)=>s+x.supplierShare,0)):0;const best=c?m.sort((a,b)=>b.supplierShare-a.supplierShare)[0]:null;if(c){shSum+=ts;bkCov+=h.totalBookings*ts}return{...h,covered:c,totalShare:ts,bestSupplier:best?.supplierName||'',matchCount:m.length}});
-  return{data,hotelPct:hotels.length?data.filter(h=>h.covered).length/hotels.length:0,bookPct:bkAll?bkCov/bkAll:0,avgShare:data.filter(h=>h.covered).length?shSum/data.filter(h=>h.covered).length:0,covCount:data.filter(h=>h.covered).length,gapCount:data.filter(h=>!h.covered).length,bkAll,bkCov}}
-
-function buildTiers(N){if(N<=50)return[{n:`All (1–${N})`,s:0,e:N}];const t=[],cuts=[25,50,100,250,500,1000,2000,5000];let p=0;for(const c of cuts){if(p>=N)break;const e=Math.min(c,N);if(e>p)t.push({n:`${p+1}–${e}`,s:p,e});p=e}if(p<N)t.push({n:`${p+1}–${N}`,s:p,e:N});return t}
-
-function updateCov(){
-  const sel=S.selectedSuppliers,hotels=S.filtered;
-  if(!hotels.length||!sel.size){S.covData=[];$('c1').textContent='—';$('c2').textContent='—';$('c3').textContent='—';['c1s','c2s','c3s'].forEach(id=>$(id).textContent='');$('tierGrid').innerHTML='';$('covDistro').innerHTML='';$('covWrap').innerHTML='<div class="empty"><p>Select suppliers.</p></div>';$('gapN').textContent='0';$('covN').textContent='0';return}
-  const cov=getCov(sel);S.covData=cov.data;
-  const cp=cov.hotelPct*100,bp=cov.bookPct*100,as=cov.avgShare*100;
-  $('c1').textContent=`${cov.covCount}/${hotels.length}`;$('c1').className='cov-v '+(cp>=70?'good':cp>=40?'warn':'bad');$('c1s').textContent=`${cp.toFixed(1)}%`;
-  $('c2').textContent=`${bp.toFixed(1)}%`;$('c2').className='cov-v '+(bp>=60?'good':bp>=30?'warn':'bad');$('c2s').textContent=`${Math.round(cov.bkCov).toLocaleString()} of ${cov.bkAll.toLocaleString()}`;
-  $('c3').textContent=`${as.toFixed(1)}%`;$('c3').className='cov-v '+(as>=30?'good':as>=15?'warn':'bad');$('c3s').textContent='Combined share in covered hotels';
-  $('gapN').textContent=cov.gapCount;$('covN').textContent=cov.covCount;
-
-  const tiers=buildTiers(hotels.length);
-  $('tierGrid').innerHTML=tiers.map(t=>{const sl=S.covData.slice(t.s,t.e),cv=sl.filter(h=>h.covered).length,tot=sl.length,p=tot?cv/tot*100:0,cls=p>=70?'tg':p>=40?'tw':'tb',vc2=p>=70?'good':p>=40?'warn':'bad';const tb=sl.reduce((s,h)=>s+h.totalBookings,0),cb=sl.reduce((s,h)=>s+h.totalBookings*h.totalShare,0);return`<div class="tier-c ${cls}"><div class="tier-n">${t.n}</div><div class="tier-v ${vc2}">${p.toFixed(0)}%</div><div class="tier-d">${cv}/${tot} hotels</div><div class="tier-d">${tb?Math.round(cb/tb*100):0}% bookings</div></div>`}).join('');
-  $('covDistro').innerHTML=`<div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:8px;">Distribution</div>${tiers.map(t=>{const sl=S.covData.slice(t.s,t.e),cv=sl.filter(h=>h.covered).length,tot=sl.length,cp2=tot?cv/tot*100:0;return`<div class="cov-bar-row"><span class="cov-bar-label">${t.n}</span><div class="cov-bar-track"><div class="cov-bar-covered" style="width:${cp2}%"></div><div class="cov-bar-gap" style="width:${100-cp2}%"></div></div><span class="cov-bar-pct" style="color:${cp2>=70?'var(--good)':cp2>=40?'var(--warn)':'var(--bad)'}">${cp2.toFixed(0)}%</span></div>`}).join('')}`;
-  renderCovTable();
+    const sRows = h.suppliers.map(s => `<tr><td>${s.supplierName}</td><td>${s.supplierRank}</td><td>${s.supplierBookings}</td><td>${pct(s.supplierShare)}</td><td>${pct(s.roomNightShare)}</td><td>${s.isMeaningful ? '<span class="badge good">Y</span>' : '<span class="badge neutral">N</span>'}</td><td>${s.recencyGapDays === 999999 ? '—' : s.recencyGapDays + 'd'}</td></tr>`).join('');
+    html += `<tr>
+      <td style="font-family:var(--mono);font-weight:600;color:var(--text-dim)">${i + 1}</td>
+      <td style="font-family:var(--mono);font-size:11px">${h.hotelId}</td>
+      <td class="hotel-name-cell" title="${safe(h.hotelName)}">${safe(h.hotelName)}</td>
+      <td>${safe(h.country)}</td><td>${safe(h.city)}</td><td>${safe(h.rating)}</td>
+      <td style="font-family:var(--mono)">${h.totalBookings}</td>
+      <td>${h.meaningfulSupplierCount} <span style="color:var(--text-dim)">(${h.supplierCount})</span></td>
+      <td style="font-family:var(--mono)">${pct(h.topSupplierShare)}</td>
+      <td style="font-family:var(--mono)">${pct(h.top3Share)}</td>
+      <td style="font-family:var(--mono)">${h.hotelRecencyDays === 999999 ? '—' : h.hotelRecencyDays + 'd'}</td>
+      <td class="score-cell"><span class="badge info">${h.hotelScore.toFixed(1)}</span>${tip}</td>
+      <td><span class="badge ${vc(h.verdict)}">${h.verdict}</span></td>
+      <td style="font-family:var(--mono);color:var(--text-dim)">#${h.globalRank}</td>
+      <td><details><summary>▸</summary><div class="sup-box"><table><thead><tr><th>Supplier</th><th>Rank</th><th>Bk</th><th>Share</th><th>RN</th><th>M.</th><th>Gap</th></tr></thead><tbody>${sRows}</tbody></table></div></details></td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  $('directTable').innerHTML = html;
 }
 
-function renderCovTable(){
-  if(!S.covData||!S.covData.length)return;
-  let list=S.covView==='gaps'?S.covData.filter(h=>!h.covered):S.covView==='covered'?S.covData.filter(h=>h.covered):S.covData;
-  if(!list.length){$('covWrap').innerHTML=`<div class="empty"><p>${S.covView==='gaps'?'Full coverage!':'No data.'}</p></div>`;return}
-  const CK=200;$('covWrap').innerHTML=`<table><thead><tr><th>Rank</th><th>Hotel ID</th><th>Hotel</th><th>Country</th><th>City</th><th>Bookings</th><th>Score</th><th>Verdict</th><th>Status</th><th>Matched</th><th>Share</th><th>Best</th></tr></thead><tbody id="covBody"></tbody></table>`;
-  const body=$('covBody');
-  function chunk(s){const e=Math.min(s+CK,list.length);let html='';for(let i=s;i<e;i++){const h=list[i];html+=`<tr class="${h.covered?'cov-y':'cov-n'}"><td style="font-family:var(--mono);color:var(--text-dim)">${h.rank}</td><td style="font-family:var(--mono);font-size:11px">${h.hotelId}</td><td class="hotel-name-cell" title="${safe(h.hotelName)}">${safe(h.hotelName)}</td><td>${safe(h.country)}</td><td>${safe(h.city)}</td><td style="font-family:var(--mono)">${h.totalBookings}</td><td><span class="badge info">${h.hotelScore.toFixed(1)}</span></td><td><span class="badge ${vc(h.verdict)}">${h.verdict}</span></td><td>${h.covered?'<span class="badge good">Covered</span>':'<span class="badge bad">Gap</span>'}</td><td style="font-family:var(--mono)">${h.matchCount||'—'}</td><td style="font-family:var(--mono)">${h.covered?pct(h.totalShare):'—'}</td><td>${h.bestSupplier||'—'}</td></tr>`}body.insertAdjacentHTML('beforeend',html);if(e<list.length)requestAnimationFrame(()=>chunk(e))}chunk(0)}
+// ─── NOT FOUND TABLE ───
+function renderNotFoundTable() {
+  const nf = S.notFound;
+  if (!nf.length) { $('notFoundTable').innerHTML = '<div class="empty" style="padding:30px;"><div class="icon">✅</div><p>All uploaded hotels were found in the base data!</p></div>'; return }
+  let html = `<table><thead><tr><th>#</th><th>Hotel ID</th><th>Hotel Name</th><th>Star Category</th><th>Lat</th><th>Lon</th><th>Proxy Available?</th></tr></thead><tbody>`;
+  nf.forEach((h, i) => {
+    const pr = S.proxyResults.find(p => p.userHotel.hotelId === h.hotelId);
+    const hasProxy = pr && pr.proxies.length > 0;
+    html += `<tr>
+      <td style="font-family:var(--mono);color:var(--text-dim)">${i + 1}</td>
+      <td style="font-family:var(--mono);font-size:11px">${h.hotelId}</td>
+      <td class="hotel-name-cell">${safe(h.hotelName)}</td>
+      <td>${h.starCategory || '—'}</td>
+      <td style="font-family:var(--mono);font-size:11px">${h.lat || '—'}</td>
+      <td style="font-family:var(--mono);font-size:11px">${h.lon || '—'}</td>
+      <td>${hasProxy ? `<span class="badge good">${pr.proxies.length} proxies</span>` : '<span class="badge bad">None</span>'}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  $('notFoundTable').innerHTML = html;
+}
 
-// ─── STATS ───
-function updateStats(h){$('s1').textContent=S.hotels.length;$('s2').textContent=h.length;const avg=h.length?h.reduce((s,x)=>s+x.hotelScore,0)/h.length:0;$('s3').textContent=avg.toFixed(1);const g=h.filter(x=>x.verdict==='Good Volt Fit').length;$('s4').textContent=g;$('s4s').textContent=h.length?`${(g/h.length*100).toFixed(0)}%`:''}
-function showDQ(dq){const items=[`<span class="dq-tag ok">${dq.total} rows</span>`];if(dq.dupes)items.push(`<span class="dq-tag w">${dq.dupes} dupes merged</span>`);if(dq.missingDates)items.push(`<span class="dq-tag w">${dq.missingDates} missing dates</span>`);if(!dq.dupes&&!dq.missingDates)items.push(`<span class="dq-tag ok">Clean</span>`);$('dqBanner').innerHTML=`<strong style="margin-right:12px">Data Quality</strong>${items.join(' ')}`;$('dqBanner').classList.add('visible')}
+// ─── PROXY LIST ───
+function renderProxyFilterCounts() {
+  const pr = S.proxyResults;
+  $('pfAll').textContent = pr.length;
+  $('pfMatched').textContent = pr.filter(p => p.isDirectMatch).length;
+  $('pfNotFound').textContent = pr.filter(p => !p.isDirectMatch).length;
+  $('pfNoProxy').textContent = pr.filter(p => p.proxies.length === 0).length;
+}
 
-// ─── EXPORTS ───
-function exportHotels(){if(!S.filtered.length)return;dlCSV(S.filtered.map(h=>({Rank:h.rank,'Hotel ID':h.hotelId,'Hotel Name':h.hotelName,Country:h.country,State:h.state,City:h.city,Rating:h.rating,'Total Bookings':h.totalBookings,'Meaningful Suppliers':h.meaningfulSupplierCount,'Supplier Count':h.supplierCount,'Top Supplier':h.topSupplier,'Top Supplier Share':h.topSupplierShare.toFixed(4),'Top 3 Share':h.top3Share.toFixed(4),'Recency Days':h.hotelRecencyDays===999999?'':h.hotelRecencyDays,'Score':h.hotelScore.toFixed(2),Verdict:h.verdict,'Suppliers':h.suppliers.map(s=>`${s.supplierName}(${pct(s.supplierShare)})`).join('; ')})),'volt_hotels_v7.csv')}
-function exportPlanCSV(){if(!S.plan.length)return;dlCSV(S.plan.map(s=>({Order:s.order,Supplier:s.supplier,Reason:s.reason,Marginal:s.marginal?'Yes':'No','New Hotels':s.marginalHotels,'New Hotel %':s.marginalHotelPct.toFixed(2),'Hotel Coverage After':(s.hotelPct*100).toFixed(2),'Booking Coverage After':(s.bookPct*100).toFixed(2),'Avg Share After':(s.avgShare*100).toFixed(2),'Sample Hotels Unlocked':s.unlockedHotels.join('; ')})),'volt_supplier_plan_v7.csv')}
+window.setProxyFilter = function(v, btn) {
+  S.proxyFilter = v;
+  document.querySelectorAll('#tab-proxy .tog-b').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProxyList();
+};
 
-// ─── FILTERS ───
-function fillSel(el,vs,ph){const c=el.value;el.innerHTML=`<option value="">${ph}</option>`;vs.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;el.appendChild(o)});if([...el.options].some(o=>o.value===c))el.value=c}
-function refreshFilters(){const h=S.hotels;fillSel($('countryF'),[...new Set(h.map(x=>x.country).filter(Boolean))].sort(),'All');const c=$('countryF').value;const sp=h.filter(x=>!c||x.country===c);fillSel($('stateF'),[...new Set(sp.map(x=>x.state).filter(Boolean))].sort(),'All');const s=$('stateF').value;fillSel($('cityF'),[...new Set(sp.filter(x=>!s||x.state===s).map(x=>x.city).filter(Boolean))].sort(),'All');fillSel($('ratingF'),[...new Set(h.map(x=>x.rating).filter(v=>v!=null&&v!==''))].sort((a,b)=>Number(a)-Number(b)),'All')}
-function renderWI(){$('wInputs').innerHTML=Object.keys(W).map(k=>`<div class="field" style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;align-items:center;"><label style="margin-bottom:0">${WL[k]}</label><div style="display:flex;align-items:center;gap:4px"><input type="number" min="0" max="100" value="${W[k]}" data-w="${k}" style="width:60px;text-align:center;font-family:var(--mono);font-weight:600" /><span style="font-size:11px;color:var(--text-dim)">%</span></div></div><div class="hint">${WD[k]}</div></div>`).join('');$('wInputs').querySelectorAll('input[type="number"]').forEach(inp=>inp.addEventListener('input',()=>{W[inp.dataset.w]=parseInt(inp.value)||0;const t=W.demand+W.supplierDepth+W.concentration+W.backbone+W.recency;$('wTotal').textContent=t+'%';$('wTotal').style.color=t===100?'var(--good)':'var(--warn)'}))}
+window.toggleProxyGroup = function(el) {
+  el.closest('.proxy-group').classList.toggle('open');
+};
 
+function renderProxyList() {
+  const search = ($('proxySearch')?.value || '').toLowerCase().trim();
+  let list = S.proxyResults;
 
-function setAdvancedVisible(show){
-  $('advancedSidebar').classList.toggle('hidden', !show);
-  $('mainLayout').classList.toggle('compact', !show);
-  $('toggleAdvancedBtn').textContent = show ? 'Hide advanced panel' : 'Show advanced panel';
-}
-function fillQuestionSummary(){
-  const pills=[];
-  const msCS=[...MS.country],msSS=[...MS.state],msCS2=[...MS.city],msHS=[...MS.hotel];
-  const pairs=[
-    ['Top N', $('topN').value && $('topN').value !== '100' ? $('topN').value : 'Default'],
-    ['Country', msCS.length ? msCS.join(', ') : ($('countryF').value||'Any')],
-    ['State', msSS.length ? msSS.join(', ') : ($('stateF').value||'Any')],
-    ['City', msCS2.length ? msCS2.join(', ') : ($('cityF').value||'Any')],
-    ['Hotel', msHS.length ? msHS.join(', ') : ($('searchInput').value||'Any')],
-    ['Exclude', $('excludeSup').value || 'None'],
-    ['Force include', $('forceSup').value || 'None'],
-  ];
-  $('contextStrip').innerHTML = pairs.map(([k,v])=>`<span class="context-pill"><strong>${k}:</strong> ${safe(v)}</span>`).join('');
-}
-function applyQuestionInputs(){
-  if($('qTopN').value.trim()) $('topN').value = $('qTopN').value.trim();
-  $('excludeSup').value = $('qExcludeSup').value.trim();
-  $('forceSup').value = $('qForceSup').value.trim();
-  $('countryF').value = '';
-  $('stateF').value = '';
-  $('cityF').value = '';
-  $('searchInput').value = '';
-  refreshFilters();
-}
-function resetQuestionsOnly(){
-  $('qTopN').value='';
-  $('qExcludeSup').value='';
-  $('qForceSup').value='';
-  MS.country.clear(); MS.state.clear(); MS.city.clear(); MS.hotel.clear();
-  ['country','state','city','hotel'].forEach(k=>msRenderBox(k));
-}
-async function showCalculatingThen(fn){
-  $('calcOverlay').classList.add('show');
-  await new Promise(r=>setTimeout(r, 1700));
-  fn();
-  $('calcOverlay').classList.remove('show');
-}
-function populateCompareSelects(){
-  const opts = ['<option value="">Select a hotel</option>'].concat(
-    S.filtered.map(h=>`<option value="${h.rank}">#${h.rank} · ${safe(h.hotelName)||h.hotelId}</option>`)
-  ).join('');
-  $('compareA').innerHTML = opts;
-  $('compareB').innerHTML = opts;
-}
-function renderHotelCompare(rankA, rankB){
-  const a = S.filtered.find(h=>String(h.rank)===String(rankA));
-  const b = S.filtered.find(h=>String(h.rank)===String(rankB));
-  if(!a || !b){
-    $('compareResult').innerHTML = '<div class="compare-empty">Choose any two hotels after analyzing.</div>';
+  if (S.proxyFilter === 'matched') list = list.filter(p => p.isDirectMatch);
+  else if (S.proxyFilter === 'notfound') list = list.filter(p => !p.isDirectMatch);
+  else if (S.proxyFilter === 'noproxy') list = list.filter(p => p.proxies.length === 0);
+
+  if (search) list = list.filter(p => p.userHotel.hotelName.toLowerCase().includes(search) || p.userHotel.hotelId.toLowerCase().includes(search));
+
+  if (!list.length) {
+    $('proxyList').innerHTML = '<div class="empty"><p>No results.</p></div>';
+    $('proxyStats').innerHTML = '';
     return;
   }
-  const metrics=[
-    ['totalBookings','Bookings'],
-    ['meaningfulSupplierCount','Meaningful suppliers'],
-    ['topSupplierShare','Top share'],
-    ['top3Share','Top 3 share'],
-    ['hotelRecencyDays','Recency'],
-    ['hotelScore','Final score']
-  ];
-  const winsA=[], winsB=[];
-  metrics.forEach(([m,l])=>{
-    const cls=deltaClass(m,a[m],b[m]);
-    if(cls==='delta-good') winsA.push(l);
-    else if(cls==='delta-bad') winsB.push(l);
-  });
-  $('compareResult').innerHTML = `
-    <div class="compare-summary">
-      <div class="compare-mini"><div class="k">Hotel A</div><div class="v">#${a.rank}</div><div>${safe(a.hotelName)||a.hotelId}</div></div>
-      <div class="compare-mini"><div class="k">Hotel B</div><div class="v">#${b.rank}</div><div>${safe(b.hotelName)||b.hotelId}</div></div>
-      <div class="compare-mini"><div class="k">Higher rank</div><div class="v">${a.rank < b.rank ? '#'+a.rank : '#'+b.rank}</div><div>${a.rank < b.rank ? safe(a.hotelName)||a.hotelId : safe(b.hotelName)||b.hotelId}</div></div>
-    </div>
-    <table class="compare-table"><thead><tr><th>Metric</th><th>#${a.rank}</th><th>#${b.rank}</th><th>Edge</th></tr></thead><tbody>
-      ${metrics.map(([m,l])=>{
-        const cls=deltaClass(m,a[m],b[m]);
-        const edge=cls==='delta-good' ? '#'+a.rank : cls==='delta-bad' ? '#'+b.rank : 'Tie';
-        return `<tr><td>${l}</td><td>${formatMetric(m,a[m])}</td><td>${formatMetric(m,b[m])}</td><td class="${cls}">${edge}</td></tr>`;
-      }).join('')}
-    </tbody></table>
-    <div class="compare-empty" style="margin-top:10px;">#${a.rank} leads on: ${winsA.length ? winsA.join(', ') : 'none'} · #${b.rank} leads on: ${winsB.length ? winsB.join(', ') : 'none'}</div>
+
+  const withProxy = list.filter(p => p.proxies.length > 0).length;
+  const avgFit = list.reduce((s, p) => s + (p.proxies[0]?.fitness || 0), 0) / (list.length || 1);
+  const strongCount = list.reduce((s, p) => s + p.proxies.filter(x => x.isStrongProxy).length, 0);
+  $('proxyStats').innerHTML = `
+    <div class="sum-card"><div class="sum-l">Showing</div><div class="sum-v">${list.length}</div><div class="sum-s">hotels</div></div>
+    <div class="sum-card"><div class="sum-l">With Proxies</div><div class="sum-v ${withProxy / list.length >= 0.7 ? 'good' : 'warn'}">${withProxy}</div><div class="sum-s">${(withProxy / list.length * 100).toFixed(0)}%</div></div>
+    <div class="sum-card"><div class="sum-l">Avg Top Fitness</div><div class="sum-v">${avgFit.toFixed(1)}</div></div>
+    <div class="sum-card"><div class="sum-l">Strong Proxies</div><div class="sum-v ${strongCount > 0 ? 'good' : 'warn'}">${strongCount}</div><div class="sum-s">pass v7 minimums</div></div>
   `;
-}
-window.compareHotelsFromUI = function(){
-  renderHotelCompare($('compareA').value, $('compareB').value);
-}
-async function loadCsvFile(file){
-  if(!file) return;
-  try{
-    const text=await file.text();
-    const rows=parseCSV(text);
-    validate(rows);
-    S.rawRows=rows;
-    S.hotels=computeHotels(rows);
-    S.selectedSuppliers.clear();
-    S.plan=[];
-    MS.country.clear(); MS.state.clear(); MS.city.clear(); MS.hotel.clear();
-    ['country','state','city','hotel'].forEach(k=>msRenderBox(k));
-    refreshFilters();
-    populateQuestionDropdowns();
-  }catch(err){ alert(err.message); throw err; }
-}
-async function analyzeFromQuestions(){
-  if(!S.rawRows.length){ alert('Upload CSV first.'); return; }
-  await showCalculatingThen(()=>{
-    S.hotels=computeHotels(S.rawRows);
-    refreshFilters();
-    applyQuestionInputs();
-    run();
-    optimize();
-    fillQuestionSummary();
-    populateCompareSelects();
-    $('questionShell').classList.add('hidden');
-    $('analysisShell').classList.remove('hidden');
-    $('postActions').classList.remove('hidden');
-    setAdvancedVisible(false);
-    if(S.filtered.length >= 2){
-      $('compareA').value = String(S.filtered[0].rank);
-      $('compareB').value = String(S.filtered[1].rank);
-      renderHotelCompare($('compareA').value, $('compareB').value);
+
+  let html = '';
+  list.forEach(pr => {
+    const uh = pr.userHotel;
+    const stars = uh.starCategory ? '★'.repeat(Math.min(5, uh.starCategory)) : '';
+    const matchBadge = pr.isDirectMatch ? '<span class="badge good">Matched</span>' : '<span class="badge bad">Not Found</span>';
+    const proxyBadge = pr.proxies.length ? `<span class="badge purple">${pr.proxies.length} proxies</span>` : '<span class="badge neutral">No proxy</span>';
+
+    html += `<div class="proxy-group${pr.proxies.length ? '' : ''}">
+      <div class="proxy-header" onclick="toggleProxyGroup(this)">
+        <span class="ph-name">${safe(uh.hotelName) || uh.hotelId}</span>
+        <span class="ph-id">${uh.hotelId}</span>
+        <span class="ph-star">${stars || '—'}</span>
+        <div class="ph-meta">
+          ${matchBadge} ${proxyBadge}
+          ${pr.isDirectMatch && pr.baseHotel ? `<span class="badge info">Score: ${pr.baseHotel.hotelScore.toFixed(1)}</span>` : ''}
+          <span class="proxy-chevron">▼</span>
+        </div>
+      </div>
+      <div class="proxy-body">`;
+
+    if (!pr.proxies.length) {
+      html += `<div style="padding:12px 0;font-size:12px;color:var(--text-dim);">No proxy candidates found within the configured radius and star category.</div>`;
     } else {
-      renderHotelCompare('', '');
+      html += `<div style="font-size:11px;color:var(--text-dim);margin-bottom:8px;padding:4px 0;border-bottom:1px solid var(--border-light);display:grid;grid-template-columns:40px 1fr 80px 80px 90px 80px 90px 70px;gap:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">
+        <span>#</span><span>Proxy Hotel</span><span>Distance</span><span>★</span><span>Fitness</span><span>Score</span><span>Verdict</span><span>Data</span>
+      </div>`;
+      pr.proxies.forEach((c, i) => {
+        const h = c.hotel;
+        const distPct = clamp(c.distance / (toN($('qRadius').value) || 1) * 100, 0, 100);
+        const distColor = distPct <= 30 ? 'var(--good)' : distPct <= 70 ? 'var(--warn)' : 'var(--bad)';
+        html += `<div class="proxy-match">
+          <div class="pm-rank">${i + 1}</div>
+          <div>
+            <div class="pm-name">${safe(h.hotelName) || h.hotelId}</div>
+            <div class="pm-sub">${h.hotelId} · ${safe(h.city)}${h.country ? ', ' + h.country : ''}</div>
+          </div>
+          <div style="font-family:var(--mono);font-size:11px;">${c.distance.toFixed(2)} km<div class="dist-bar"><div class="dist-fill" style="width:${100 - distPct}%;background:${distColor}"></div></div></div>
+          <div>${safe(h.rating)}</div>
+          <div><span class="badge ${c.fitness >= 60 ? 'good' : c.fitness >= 30 ? 'warn' : 'bad'}">${c.fitness.toFixed(1)}</span></div>
+          <div class="score-cell"><span class="badge info">${h.hotelScore.toFixed(1)}</span>
+            <div class="score-tip">${Object.keys(WL).map(k => `<div class="st-r"><span class="l">${WL[k]}</span><span class="v">${h.sb.w[k].toFixed(1)}</span></div><div class="st-b"><div class="st-bf" style="width:${Math.min(100, h.sb.raw[k] * 100)}%"></div></div>`).join('')}${h.sb.pen.length ? `<div class="st-d"></div>${h.sb.pen.map(p => `<div class="st-r"><span class="l" style="color:#f87171">⊖ ${p}</span></div>`).join('')}` : ''}
+              <div class="st-d"></div><div class="st-r"><span class="l" style="font-weight:700">Total</span><span class="v">${h.hotelScore.toFixed(1)}</span></div>
+              <div class="st-d"></div><div class="st-r"><span class="l">Global Rank</span><span class="v">#${h.globalRank}</span></div>
+              <div class="st-r"><span class="l">M. Suppliers</span><span class="v">${h.meaningfulSupplierCount}</span></div>
+              <div class="st-r"><span class="l">Top Supplier</span><span class="v">${h.topSupplier}</span></div>
+              <div class="st-r"><span class="l">Top Share</span><span class="v">${pct(h.topSupplierShare)}</span></div>
+            </div>
+          </div>
+          <div><span class="badge ${vc(h.verdict)}">${h.verdict}</span></div>
+          <div>${c.isStrongProxy ? '<span class="badge good">Strong</span>' : '<span class="badge neutral">Weak</span>'}</div>
+        </div>`;
+      });
+    }
+    html += `</div></div>`;
+  });
+  $('proxyList').innerHTML = html;
+}
+
+// ─── EXPORTS ───
+function exportDirectCSV() {
+  if (!S.directMatches.length) return;
+  dlCSV(S.directMatches.map(h => ({
+    'Hotel ID': h.hotelId, 'Hotel Name': h.hotelName, Country: h.country, State: h.state, City: h.city, Rating: h.rating,
+    'Total Bookings': h.totalBookings, 'Meaningful Suppliers': h.meaningfulSupplierCount, 'Supplier Count': h.supplierCount,
+    'Top Supplier': h.topSupplier, 'Top Supplier Share': h.topSupplierShare.toFixed(4), 'Top 3 Share': h.top3Share.toFixed(4),
+    'Recency Days': h.hotelRecencyDays === 999999 ? '' : h.hotelRecencyDays,
+    Score: h.hotelScore.toFixed(2), Verdict: h.verdict, 'Global Rank': h.globalRank,
+    Suppliers: h.suppliers.map(s => `${s.supplierName}(${pct(s.supplierShare)})`).join('; ')
+  })), 'volt_direct_matches.csv');
+}
+
+function exportProxyCSV() {
+  if (!S.proxyResults.length) return;
+  const rows = [];
+  S.proxyResults.forEach(pr => {
+    const uh = pr.userHotel;
+    if (!pr.proxies.length) {
+      rows.push({
+        'User Hotel ID': uh.hotelId, 'User Hotel Name': uh.hotelName, 'User Star': uh.starCategory,
+        'User Lat': uh.lat, 'User Lon': uh.lon, 'Direct Match': pr.isDirectMatch ? 'Yes' : 'No',
+        'Proxy Rank': '', 'Proxy Hotel ID': '', 'Proxy Hotel Name': '', 'Proxy Star': '',
+        'Distance (km)': '', 'Fitness Score': '', 'Hotel Score': '', 'Verdict': '',
+        'Global Rank': '', 'Meaningful Suppliers': '', 'Top Supplier': '', 'Data Quality': 'No proxy found'
+      });
+    } else {
+      pr.proxies.forEach((c, i) => {
+        rows.push({
+          'User Hotel ID': uh.hotelId, 'User Hotel Name': uh.hotelName, 'User Star': uh.starCategory,
+          'User Lat': uh.lat, 'User Lon': uh.lon, 'Direct Match': pr.isDirectMatch ? 'Yes' : 'No',
+          'Proxy Rank': i + 1, 'Proxy Hotel ID': c.hotel.hotelId, 'Proxy Hotel Name': c.hotel.hotelName,
+          'Proxy Star': c.hotel.rating, 'Distance (km)': c.distance.toFixed(3),
+          'Fitness Score': c.fitness.toFixed(2), 'Hotel Score': c.hotel.hotelScore.toFixed(2),
+          'Verdict': c.hotel.verdict, 'Global Rank': c.hotel.globalRank,
+          'Meaningful Suppliers': c.hotel.meaningfulSupplierCount,
+          'Top Supplier': c.hotel.topSupplier, 'Data Quality': c.isStrongProxy ? 'Strong' : 'Weak'
+        });
+      });
     }
   });
+  dlCSV(rows, 'volt_proxy_recommendations.csv');
+}
+
+// ─── CONTEXT STRIP ───
+function fillContext() {
+  const pairs = [
+    ['Radius', ($('qRadius').value || '1') + ' km'],
+    ['Star tolerance', '+' + ($('qStarTol').value || '1')],
+    ['Max proxies', $('qMaxProxy').value || '5'],
+    ['Score weight', ($('qWScore').value || '70') + '%'],
+    ['Distance weight', ($('qWDist').value || '30') + '%'],
+  ];
+  $('contextStrip').innerHTML = pairs.map(([k, v]) => `<span class="context-pill"><strong>${k}:</strong> ${v}</span>`).join('');
 }
 
 // ─── TABS ───
-document.querySelectorAll('.tab').forEach(tab=>tab.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');S.activeTab=tab.dataset.tab;['hotels','suppliers','optimizer','simulator','settings'].forEach(t=>{const el=$('tab-'+t);if(el)el.classList.toggle('hidden',t!==S.activeTab)})}));
-
-// ─── VALIDATE ───
-function validate(rows){if(!rows.length)throw new Error('CSV empty.');const h=Object.keys(rows[0]);const m=REQ.filter(c=>!h.includes(c));if(m.length)throw new Error(`Missing: ${m.join(', ')}`)}
-function reset(){$('topN').value=100;$('minBookings').value=5;$('minSuppliers').value=3;$('minScore').value=0;$('maxScore').value=100;$('maxTopShare').value=100;$('maxRecency').value='';$('searchInput').value='';$('countryF').value='';$('stateF').value='';$('cityF').value='';$('ratingF').value='';$('verdictF').value='';$('maxSup').value=8;$('marginalCutoff').value=0.5;$('excludeSup').value='';$('forceSup').value='';$('supSearch').value='';S.selectedSuppliers.clear();S.plan=[];refreshFilters();if(S.hotels.length)run()}
+document.querySelectorAll('.tab').forEach(tab => tab.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  S.activeTab = tab.dataset.tab;
+  ['summary', 'direct', 'notfound', 'proxy'].forEach(t => {
+    const el = $('tab-' + t); if (el) el.classList.toggle('hidden', t !== S.activeTab);
+  });
+}));
 
 // ─── EVENTS ───
-$('csvFile').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{await loadCsvFile(file);run();$('questionShell').classList.remove('hidden')}catch(err){}});
-$('csvFileTop').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{await loadCsvFile(file)}catch(err){}});
-$('analyzeBtn').addEventListener('click',analyzeFromQuestions);
-$('questionReset').addEventListener('click',resetQuestionsOnly);
-$('editQuestionsBtn').addEventListener('click',()=>{ $('questionShell').classList.remove('hidden'); window.scrollTo({top:0,behavior:'smooth'}); });
-$('showAdvancedBtn').addEventListener('click',()=>{ $('analysisShell').classList.remove('hidden'); $('postActions').classList.remove('hidden'); setAdvancedVisible(true); fillQuestionSummary(); });
-$('toggleAdvancedBtn').addEventListener('click',()=> setAdvancedVisible($('advancedSidebar').classList.contains('hidden')));
-$('runBtn').addEventListener('click',()=>{if(!S.hotels.length){alert('Upload CSV first.');return}S.hotels=computeHotels(S.rawRows);refreshFilters();run();fillQuestionSummary()});
-$('optBtn').addEventListener('click',()=>{ optimize(); fillQuestionSummary(); });
-$('compareBtn').addEventListener('click',window.compareHotelsFromUI);
-$('compareA').addEventListener('change',window.compareHotelsFromUI);
-$('compareB').addEventListener('change',window.compareHotelsFromUI);
-$('exportHotels').addEventListener('click',exportHotels);
-$('exportPlan').addEventListener('click',exportPlanCSV);
-$('resetBtn').addEventListener('click',()=>{ reset(); resetQuestionsOnly(); fillQuestionSummary(); });
-$('applyPlan').addEventListener('click',()=>{S.selectedSuppliers=new Set(S.plan.filter(s=>!s.marginal).map(s=>s.supplier));renderPicker();updateCov()});
-$('clearSup').addEventListener('click',()=>{S.selectedSuppliers.clear();renderPicker();updateCov()});
-$('selTop5').addEventListener('click',()=>{S.selectedSuppliers=new Set(S.supplierLB.slice(0,5).map(s=>s.name));renderPicker();updateCov()});
-$('supSearch').addEventListener('input',renderPicker);
-[$('countryF'),$('stateF'),$('cityF'),$('ratingF'),$('verdictF')].forEach(el=>el.addEventListener('change',()=>{refreshFilters();if(S.hotels.length){run();fillQuestionSummary()}}));
-$('searchInput').addEventListener('input',()=>{if(S.hotels.length){run();fillQuestionSummary()}});
+$('analyzeBtn').addEventListener('click', async () => {
+  const baseFile = $('csvBase').files?.[0];
+  const userFile = $('csvUser').files?.[0];
+  if (!baseFile) { alert('Please upload the Base CSV (hotel×supplier data).'); return }
+  if (!userFile) { alert('Please upload the User CSV (hotels to check).'); return }
 
+  $('calcOverlay').classList.add('show');
+  await new Promise(r => setTimeout(r, 300));
 
-// ─── MULTI-SELECT ENGINE ───
-const MS = { country: new Set(), state: new Set(), city: new Set(), hotel: new Set() };
-const MS_DATA = { country: [], state: [], city: [], hotel: [] };
+  try {
+    // Parse base CSV
+    const baseText = await baseFile.text();
+    const baseRows = parseCSV(baseText);
+    if (!baseRows.length) throw new Error('Base CSV is empty.');
+    const baseCols = Object.keys(baseRows[0]);
+    const missing = BASE_REQ.filter(c => !baseCols.includes(c));
+    if (missing.length) throw new Error(`Base CSV missing columns: ${missing.join(', ')}`);
 
-function msGetCascaded(field) {
-  const rows = S.rawRows;
-  if (!rows.length) return [];
-  const badVal = v => !v || v.startsWith('#') || ['n/a','na','null','undefined','none','-'].includes(v.toLowerCase().trim());
-  if (field === 'country') {
-    return [...new Set(rows.map(r => (r['Country']||r['CountryName']||'').trim()).filter(v => v && !badVal(v)))].sort();
-  }
-  if (field === 'state') {
-    const coSel = [...MS.country];
-    return [...new Set(rows
-      .filter(r => !coSel.length || coSel.includes((r['Country']||r['CountryName']||'').trim()))
-      .map(r => (r['State']||r['StateName']||'').trim()).filter(v => v && !badVal(v)))].sort();
-  }
-  if (field === 'city') {
-    const coSel = [...MS.country], stSel = [...MS.state];
-    return [...new Set(rows
-      .filter(r => !coSel.length || coSel.includes((r['Country']||r['CountryName']||'').trim()))
-      .filter(r => !stSel.length || stSel.includes((r['State']||r['StateName']||'').trim()))
-      .map(r => (r['City']||r['CityName']||'').trim()).filter(v => v && !badVal(v)))].sort();
-  }
-  if (field === 'hotel') {
-    const coSel = [...MS.country], stSel = [...MS.state], ciSel = [...MS.city];
-    const seen = new Set();
-    return rows
-      .filter(r => !coSel.length || coSel.includes((r['Country']||r['CountryName']||'').trim()))
-      .filter(r => !stSel.length || stSel.includes((r['State']||r['StateName']||'').trim()))
-      .filter(r => !ciSel.length || ciSel.includes((r['City']||r['CityName']||'').trim()))
-      .reduce((acc, r) => {
-        const id = String(r['Hotel ID']||'').trim();
-        const name = (r['Hotel Name']||r['HotelName']||'').trim();
-        const key = id || name;
-        if (key && !badVal(key) && !seen.has(key)) { seen.add(key); acc.push({ id, name, label: name || id }); }
-        return acc;
-      }, [])
-      .sort((a,b)=>a.label.localeCompare(b.label));
-  }
-  return [];
-}
+    S.baseRows = baseRows;
+    S.baseHotels = computeHotels(baseRows);
+    S.baseMap = new Map();
+    S.baseHotels.forEach(h => S.baseMap.set(h.hotelId, h));
 
-function msRenderList(field) {
-  const query = ($('msSearch-'+field).value||'').toLowerCase().trim();
-  const items = msGetCascaded(field);
-  MS_DATA[field] = items;
-  const list = $('msList-'+field);
-  const filtered = field === 'hotel'
-    ? items.filter(x => !query || x.label.toLowerCase().includes(query) || x.id.toLowerCase().includes(query))
-    : items.filter(x => !query || x.toLowerCase().includes(query));
+    // Parse user CSV
+    const userText = await userFile.text();
+    const userRows = parseCSV(userText);
+    if (!userRows.length) throw new Error('User CSV is empty.');
+    const userCols = Object.keys(userRows[0]);
+    const userMissing = USER_REQ.filter(c => !userCols.includes(c));
+    if (userMissing.length) throw new Error(`User CSV missing columns: ${userMissing.join(', ')}`);
 
-  if (!filtered.length) {
-    list.innerHTML = '<div class="ms-empty">No options</div>';
-    return;
-  }
-  if (field === 'hotel') {
-    list.innerHTML = filtered.map(x => {
-      const sel = MS.hotel.has(x.id) || MS.hotel.has(x.name);
-      return `<div class="ms-item ${sel?'selected':''}" onclick="msToggleItem('hotel','${x.id||x.name}',this)">
-        <input type="checkbox" ${sel?'checked':''} onclick="event.stopPropagation()" onchange="msToggleItem('hotel','${x.id||x.name}',this.closest('.ms-item'))" />
-        <label>${x.label}</label><span class="ms-count">${x.id}</span>
-      </div>`;
-    }).join('');
-  } else {
-    list.innerHTML = filtered.map(v => {
-      const sel = MS[field].has(v);
-      return `<div class="ms-item ${sel?'selected':''}" onclick="msToggleItem('${field}','${v.replace(/'/g,"\'")}',this)">
-        <input type="checkbox" ${sel?'checked':''} onclick="event.stopPropagation()" onchange="msToggleItem('${field}','${v.replace(/'/g,"\'")}',this.closest('.ms-item'))" />
-        <label>${v}</label>
-      </div>`;
-    }).join('');
-  }
-}
+    S.userHotels = parseUserCSV(userRows);
+    if (!S.userHotels.length) throw new Error('No valid hotels found in User CSV.');
 
-function msToggleItem(field, value, el) {
-  if (MS[field].has(value)) { MS[field].delete(value); el.classList.remove('selected'); el.querySelector('input').checked = false; }
-  else { MS[field].add(value); el.classList.add('selected'); el.querySelector('input').checked = true; }
-  msRenderBox(field);
-  const downstream = { country: ['state','city','hotel'], state: ['city','hotel'], city: ['hotel'], hotel: [] };
-  downstream[field].forEach(f => {
-    MS[f].forEach(v => { if (!msGetCascaded(f).some(x => (typeof x === 'string' ? x : x.id||x.name) === v)) MS[f].delete(v); });
-    msRenderBox(f);
-    if ($('msDrop-'+f).classList.contains('open')) msRenderList(f);
-  });
-}
+    // Run analysis
+    await new Promise(r => setTimeout(r, 100));
+    runAnalysis();
+    fillContext();
 
-function msRenderBox(field) {
-  const box = $('msBox-'+field);
-  const ph = $('msPlaceholder-'+field);
-  const sel = [...MS[field]];
-  const existing = [...box.querySelectorAll('.ms-chip')];
-  existing.forEach(c => c.remove());
-  if (!sel.length) {
-    ph.style.display = '';
-  } else {
-    ph.style.display = 'none';
-    const arrow = box.querySelector('.ms-arrow');
-    sel.forEach(v => {
-      const chip = document.createElement('span');
-      chip.className = 'ms-chip';
-      chip.innerHTML = `${v}<span class="ms-rm" onclick="event.stopPropagation();msRemove('${field}','${v.replace(/'/g,"\'")}')">×</span>`;
-      box.insertBefore(chip, arrow);
-    });
-  }
-}
+    // Show results
+    $('questionShell').classList.add('hidden');
+    $('analysisShell').classList.remove('hidden');
+    $('postActions').classList.remove('hidden');
 
-function msRemove(field, value) {
-  MS[field].delete(value);
-  msRenderBox(field);
-  const downstream = { country: ['state','city','hotel'], state: ['city','hotel'], city: ['hotel'], hotel: [] };
-  downstream[field].forEach(f => {
-    MS[f].forEach(v => { if (!msGetCascaded(f).some(x => (typeof x === 'string' ? x : x.id||x.name) === v)) MS[f].delete(v); });
-    msRenderBox(f);
-  });
-}
-
-function msToggle(field) {
-  const drop = $('msDrop-'+field);
-  const box = $('msBox-'+field);
-  const isOpen = drop.classList.contains('open');
-  document.querySelectorAll('.ms-dropdown.open').forEach(d => { d.classList.remove('open'); d.closest('.ms-wrap').querySelector('.ms-box').classList.remove('open'); });
-  if (!isOpen) {
-    drop.classList.add('open');
-    box.classList.add('open');
-    $('msSearch-'+field).value = '';
-    msRenderList(field);
-    $('msSearch-'+field).focus();
-  }
-}
-
-function msFilter(field) {
-  msRenderList(field);
-}
-
-function populateQuestionDropdowns() {
-  ['country','state','city','hotel'].forEach(f => {
-    $('msBox-'+f).classList.remove('disabled');
-  });
-}
-
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('.ms-wrap')) {
-    document.querySelectorAll('.ms-dropdown.open').forEach(d => { d.classList.remove('open'); d.closest('.ms-wrap').querySelector('.ms-box').classList.remove('open'); });
+  } catch (err) {
+    alert(err.message);
+  } finally {
+    $('calcOverlay').classList.remove('show');
   }
 });
 
-renderHHead();renderWI();fillQuestionSummary();setAdvancedVisible(false);
+$('editSettingsBtn').addEventListener('click', () => {
+  $('questionShell').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 
-document.addEventListener('mouseover',function(e){const cell=e.target.closest('.score-cell');if(!cell)return;const tip=cell.querySelector('.score-tip');if(!tip)return;tip.style.display='block';const cr=cell.getBoundingClientRect(),th=tip.offsetHeight,tw=tip.offsetWidth;let top=cr.top-th-8;let left=cr.left+cr.width/2-tw/2;if(top<8)top=cr.bottom+8;if(left<8)left=8;if(left+tw>window.innerWidth-8)left=window.innerWidth-tw-8;tip.style.top=top+'px';tip.style.left=left+'px'});
-document.addEventListener('mouseout',function(e){const cell=e.target.closest('.score-cell');if(!cell)return;const tip=cell.querySelector('.score-tip');if(!tip)return;tip.style.display='none'});
+$('exportDirect').addEventListener('click', exportDirectCSV);
+$('exportProxy').addEventListener('click', exportProxyCSV);
+$('proxySearch')?.addEventListener('input', renderProxyList);
+
+// Score tooltip positioning
+document.addEventListener('mouseover', function(e) {
+  const cell = e.target.closest('.score-cell'); if (!cell) return;
+  const tip = cell.querySelector('.score-tip'); if (!tip) return;
+  tip.style.display = 'block';
+  const cr = cell.getBoundingClientRect(), th = tip.offsetHeight, tw = tip.offsetWidth;
+  let top = cr.top - th - 8, left = cr.left + cr.width / 2 - tw / 2;
+  if (top < 8) top = cr.bottom + 8;
+  if (left < 8) left = 8;
+  if (left + tw > window.innerWidth - 8) left = window.innerWidth - tw - 8;
+  tip.style.top = top + 'px'; tip.style.left = left + 'px';
+});
+document.addEventListener('mouseout', function(e) {
+  const cell = e.target.closest('.score-cell'); if (!cell) return;
+  const tip = cell.querySelector('.score-tip'); if (!tip) return;
+  tip.style.display = 'none';
+});
 </script>
 </body>
 </html>
